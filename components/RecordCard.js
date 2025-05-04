@@ -1,65 +1,90 @@
 import { Text, View, Image, StyleSheet, TouchableHighlight } from 'react-native'
+import { useCountdown } from '../hooks/useCountDown'
 import Port from "../assets/RecordCardIcons/Port.svg"
 import Ship from "../assets/RecordCardIcons/Ship.svg"
 
 export default function RecordCard(props) {
     const data = props.data
     const arrive_date = new Date(data.arrive_date)
+    const sail_date = new Date(data.sail_date)
+    const arrive_date_real = data.arrive_date_real ? new Date(data.arrive_date_real) : 'null'
+    const sail_date_real = data.sail_date_real ? new Date(data.sail_date_real) : 'null'
     const current_date = Date.now()
-    const countDownTimer = () => {
-        const diff = arrive_date - current_date;
-        const days = Math.abs(Math.floor(diff / (1000 * 60 * 60 * 24)))
-        const hours = Math.abs(Math.floor(diff % (1000 * 60 * 60 * 24) / (1000 * 60 * 60)))
-        const minutes = Math.abs(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)))
+    const arrive_status = (arrive_date_real == 'null' && arrive_date > current_date) ? 'default' : 
+                          (arrive_date_real == 'null' && arrive_date <= current_date) ? 'gettingLate' :
+                          (arrive_date_real != 'null' && arrive_date_real <= arrive_date) ? 'inTime' :
+                          (arrive_date_real != 'null' && arrive_date_real > arrive_date) ? 'late' : 'default'
+    const sail_status = (sail_date_real == 'null' && sail_date > current_date) ? 'default' : 
+                          (sail_date_real == 'null' && sail_date <= current_date) ? 'gettingLate' :
+                          (sail_date_real != 'null' && sail_date_real <= sail_date) ? 'inTime' :
+                          (sail_date_real != 'null' && sail_date_real > sail_date) ? 'late' : 'default'
+    const lateColor = "rgba(191, 0, 0, 0.9)"
+    const gettingLateColor = "#FF0000"
+    const inTimeColor = "#00E000"
+    const declOfNum = (n, titles) => {
+      return titles[(n % 10 === 1 && n % 100 !== 11) ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2]
+    }
+    const countDownTimer = (date, status, real_date) => {
+      const [days, hours, minutes] = useCountdown(date, current_date, real_date);
+      const diff = date - current_date;
         return (<>
             <View style={styles.contentTimeTimer}>
-                <Text style={styles.contentTimeTimerText}>
-                    {Math.floor(days / 10) == 0 ? "0"+days.toString():days}
+                <Text style={[styles.contentTimeTimerText, status=='default'?{}:status=='late'?{color: lateColor}:status=='gettingLate'?{color: gettingLateColor}:{color: inTimeColor}]}>
+                    {diff < 0 ? "-" : ""}{Math.floor(days / 10) == 0 ? "0"+days.toString():days}
                 </Text>
-                <Text style={styles.contentTimeTimerTextUndertime}>день</Text>
+                <Text style={[styles.contentTimeTimerTextUndertime, status=='default'?{}:status=='late'?{color: lateColor}:status=='gettingLate'?{color: gettingLateColor}:{color: inTimeColor}]}>{declOfNum(days, ['день','дня','дней'])}</Text>
             </View>
             <View>
-                <Text style={styles.contentTimeTimerText}>:</Text>
+                <Text style={[styles.contentTimeTimerText, status=='default'?{}:status=='late'?{color: lateColor}:status=='gettingLate'?{color: gettingLateColor}:{color: inTimeColor}]}>:</Text>
             </View>
-            <View style={styles.contentTimeTimer}>
-                <Text style={styles.contentTimeTimerText}>
+            <View style={[styles.contentTimeTimer, status=='default'?{}:status=='late'?{color: lateColor}:status=='gettingLate'?{color: gettingLateColor}:{color: inTimeColor}]}>
+                <Text style={[styles.contentTimeTimerText, status=='default'?{}:status=='late'?{color: lateColor}:status=='gettingLate'?{color: gettingLateColor}:{color: inTimeColor}]}>
                     {Math.floor(hours / 10) == 0 ? "0"+hours:hours}
                 </Text>
-                <Text style={styles.contentTimeTimerTextUndertime}>часов</Text>
+                <Text style={[styles.contentTimeTimerTextUndertime, status=='default'?{}:status=='late'?{color: lateColor}:status=='gettingLate'?{color: gettingLateColor}:{color: inTimeColor}]}>{declOfNum(hours, ['час','часа','часов'])}</Text>
             </View>
             <View>
-                <Text style={styles.contentTimeTimerText}>:</Text>
+                <Text style={[styles.contentTimeTimerText, status=='default'?{}:status=='late'?{color: lateColor}:status=='gettingLate'?{color: gettingLateColor}:{color: inTimeColor}]}>:</Text>
             </View>
             <View style={styles.contentTimeTimer}>
-                <Text style={styles.contentTimeTimerText}>
+                <Text style={[styles.contentTimeTimerText, status=='default'?{}:status=='late'?{color: lateColor}:status=='gettingLate'?{color: gettingLateColor}:{color: inTimeColor}]}>
                     {Math.floor(minutes / 10) == 0 ? "0"+minutes:minutes}
                 </Text>
-                <Text style={styles.contentTimeTimerTextUndertime}>минут</Text>
+                <Text style={[styles.contentTimeTimerTextUndertime, status=='default'?{}:status=='late'?{color: lateColor}:status=='gettingLate'?{color: gettingLateColor}:{color: inTimeColor}]}>{declOfNum(minutes, ['минута','минуты','минут'])}</Text>
             </View>
         </>)
     }
     return (
-      <TouchableHighlight underlayColor="#6CACE4" style={styles.container} onPress={()=>{console.log(`record ${data.number} pressed`)}}>
+      <TouchableHighlight underlayColor="#6CACE4" style={styles.container} onPress={()=>{console.log(`record ${data.number} pressed`)}} key={data.number}>
         <View>
-        <View style={styles.head}>
-            <View style={styles.headShip}>
-                <Ship width={32} height={32}/>
-                <Text style={styles.headText}>{data.ship}</Text>
+          <View style={styles.head}>
+              <View style={styles.headShip}>
+                  <Ship width={32} height={32}/>
+                  <Text style={styles.headText}>{data.ship}</Text>
+              </View>
+              <View style={styles.headPort}>
+                  <Port width={32} height={32}/>
+                  <Text style={styles.headText}>{data.port}</Text>
+              </View>
+          </View>
+            <View style={styles.contentFront}>
+                <View style={styles.contentDate}>
+                    <Text style={styles.contentDateText}>До прибытия в порт</Text>
+                    <Text style={styles.contentDateText}>{arrive_date.toLocaleString()}</Text>
+                </View>
+                <View style={styles.contentTime}>
+                    {countDownTimer(arrive_date, arrive_status, arrive_date_real)}
+                </View>
             </View>
-            <View style={styles.headPort}>
-                <Port width={32} height={32}/>
-                <Text style={styles.headText}>{data.port}</Text>
+            <View style={styles.contentBack}>
+                <View style={styles.contentDate}>
+                    <Text style={styles.contentDateText}>До ухода в рейс</Text>
+                    <Text style={styles.contentDateText}>{sail_date.toLocaleString()}</Text>
+                </View>
+                <View style={styles.contentTime}>
+                    {countDownTimer(sail_date, sail_status, sail_date_real)}
+                </View>
             </View>
-        </View>
-        <View style={styles.content}>
-            <View style={styles.contentDate}>
-                <Text style={styles.contentDateText}>До прибытия в порт</Text>
-                <Text style={styles.contentDateText}>{arrive_date.toLocaleString()}</Text>
-            </View>
-            <View style={styles.contentTime}>
-                {countDownTimer()}
-            </View>
-        </View>
         </View>
       </TouchableHighlight>
       );
@@ -101,6 +126,12 @@ const styles = StyleSheet.create({
     top: 2
   },
   content: {
+  },
+  contentFront: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  contentBack: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

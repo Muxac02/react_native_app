@@ -35,7 +35,7 @@ export default function App() {
   ]
   const RecordsCardList = (records) =>{
     return records.map((record)=>{
-      return <RecordCard data={record} />
+      return <RecordCard data={record}/>
     })
   }
   const br = '\n';
