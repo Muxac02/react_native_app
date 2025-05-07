@@ -12,7 +12,7 @@ export default function Header(props) {
   const router = useRouter();
   return (
     <View style={styles.container}>
-      <StatusBar style="light" backgroundColor="#025EA1" />
+      <StatusBar style="light" backgroundColor="#025EA1" translucent={false} />
       <Image source={require(`../assets/omni.jpg`)} style={styles.icon} />
       <Text style={styles.title}>
         {" "}

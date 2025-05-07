@@ -1,5 +1,4 @@
-import * as NavigationBar from "expo-navigation-bar";
-import { StyleSheet, SafeAreaView, View } from "react-native";
+import { StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import RecordCard from "../../components/RecordCard";
 
 export default function App() {
@@ -31,14 +30,15 @@ export default function App() {
   ];
   const RecordsCardList = (records) => {
     return records.map((record) => {
-      return <RecordCard data={record} />;
+      return <RecordCard data={record} key={record.number} />;
     });
   };
   const br = "\n";
-  NavigationBar.setBackgroundColorAsync("#025EA1");
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.recordsList}>{RecordsCardList(records)}</View>
+      <ScrollView style={styles.recordsList}>
+        {RecordsCardList(records)}
+      </ScrollView>
     </SafeAreaView>
   );
 }

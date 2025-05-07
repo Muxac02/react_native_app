@@ -8,6 +8,7 @@ import {
 import { useCountdown } from "../hooks/useCountDown";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons/";
 import { useRouter } from "expo-router";
+import { HoldItem } from "react-native-hold-menu";
 
 export default function RecordCard(props) {
   const router = useRouter();
@@ -199,65 +200,98 @@ export default function RecordCard(props) {
       </>
     );
   };
+  const arriveButtonDisabled = data.arrive_date_real ? true : false;
+  const sailButtonDisabled = data.sail_date_real
+    ? true
+    : arriveButtonDisabled
+    ? false
+    : true;
   return (
-    <TouchableHighlight
-      underlayColor="#6CACE4"
-      style={styles.container}
-      onLongPress={() => console.log(`SHOW MENU FOR ${data.number} record`)}
-      onPress={() => {
-        router.push({
-          pathname: "/record/[id]",
-          params: {
-            id: data.number,
-            arrive_date: data.arrive_date,
-            port: data.port,
-            sail_date: data.sail_date,
-            sail_date_real: data.sail_date_real,
-            updated_at: data.updated_at,
-            ship: data.ship,
-            created_at: data.created_at,
-            arrive_date_real: data.arrive_date_real,
-            comment: data.comment,
+    <HoldItem
+      items={[
+        { text: "Действие", isTitle: true, onPress: () => {} },
+        {
+          text: "Пришел в порт",
+          onPress: () => {
+            console.log(`arrive record ${data.number}`);
           },
-        });
-      }}
-      key={data.number}
+        },
+        {
+          text: "Ушел в рейс",
+          withSeparator: true,
+          onPress: () => {
+            console.log(`sail record ${data.number}`);
+          },
+        },
+        {
+          text: "Редактировать",
+          onPress: () => {
+            console.log(`change record ${data.number}`);
+          },
+        },
+      ]}
+      hapticFeedback="Light"
+      closeOnTap
     >
-      <View>
-        <View style={styles.head}>
-          <View style={styles.headShip}>
-            <FontAwesome6 name="ship" color={textColor} size={28} />
-            <Text style={styles.headText}>{data.ship}</Text>
+      <TouchableHighlight
+        underlayColor="#6CACE4"
+        style={styles.container}
+        onLongPress={() => console.log(`SHOW MENU FOR ${data.number} record`)}
+        onPress={() => {
+          router.push({
+            pathname: "/record/[id]",
+            params: {
+              id: data.number,
+              arrive_date: data.arrive_date,
+              port: data.port,
+              sail_date: data.sail_date,
+              sail_date_real: data.sail_date_real,
+              updated_at: data.updated_at,
+              ship: data.ship,
+              created_at: data.created_at,
+              arrive_date_real: data.arrive_date_real,
+              comment: data.comment,
+            },
+          });
+        }}
+        key={data.number}
+      >
+        <View>
+          <View style={styles.head}>
+            <View style={styles.headShip}>
+              <FontAwesome6 name="ship" color={textColor} size={28} />
+              <Text style={styles.headText}>{data.ship}</Text>
+            </View>
+            <View style={styles.headPort}>
+              <FontAwesome name="anchor" color={textColor} size={28} />
+              <Text style={styles.headText}>{data.port}</Text>
+            </View>
           </View>
-          <View style={styles.headPort}>
-            <FontAwesome name="anchor" color={textColor} size={28} />
-            <Text style={styles.headText}>{data.port}</Text>
+          <View style={styles.contentFront}>
+            <View style={styles.contentDate}>
+              <Text style={styles.contentDateText}>До прибытия в порт</Text>
+              <Text style={styles.contentDateText}>
+                {arrive_date.toLocaleString()}
+              </Text>
+            </View>
+            <View style={styles.contentTime}>
+              {countDownTimer(arrive_date, arrive_status, arrive_date_real)}
+            </View>
+          </View>
+          <View style={styles.contentBack}>
+            <View style={styles.contentDate}>
+              <Text style={styles.contentDateText}>До ухода в рейс</Text>
+              <Text style={styles.contentDateText}>
+                {sail_date.toLocaleString()}
+              </Text>
+            </View>
+            <View style={styles.contentTime}>
+              {countDownTimer(sail_date, sail_status, sail_date_real)}
+            </View>
           </View>
         </View>
-        <View style={styles.contentFront}>
-          <View style={styles.contentDate}>
-            <Text style={styles.contentDateText}>До прибытия в порт</Text>
-            <Text style={styles.contentDateText}>
-              {arrive_date.toLocaleString()}
-            </Text>
-          </View>
-          <View style={styles.contentTime}>
-            {countDownTimer(arrive_date, arrive_status, arrive_date_real)}
-          </View>
-        </View>
-        <View style={styles.contentBack}>
-          <View style={styles.contentDate}>
-            <Text style={styles.contentDateText}>До ухода в рейс</Text>
-            <Text style={styles.contentDateText}>
-              {sail_date.toLocaleString()}
-            </Text>
-          </View>
-          <View style={styles.contentTime}>
-            {countDownTimer(sail_date, sail_status, sail_date_real)}
-          </View>
-        </View>
-      </View>
-    </TouchableHighlight>
+      </TouchableHighlight>
+    </HoldItem>
   );
 }
 
@@ -267,8 +301,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 16,
     padding: 8,
-    marginTop: 8,
-    marginHorizontal: 8,
+    margin: 4,
+    marginHorizontal: 12,
     boxShadow: "0 4 6.7 0 rgba(0, 0, 0, 0.25)",
   },
   head: {
