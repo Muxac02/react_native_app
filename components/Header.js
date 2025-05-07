@@ -5,15 +5,56 @@ import {
   StyleSheet,
   TouchableHighlight,
 } from "react-native";
+import {
+  Drawer,
+  DrawerBackdrop,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  DrawerFooter,
+} from "@/components/ui/drawer";
 import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 
 export default function Header(props) {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
   return (
     <View style={styles.container}>
       <StatusBar style="light" backgroundColor="#025EA1" translucent={false} />
-      <Image source={require(`../assets/omni.jpg`)} style={styles.icon} />
+      <TouchableHighlight
+        onPress={() => {
+          setOpen(true);
+        }}
+      >
+        <Image source={require(`../assets/omni.jpg`)} style={styles.icon} />
+      </TouchableHighlight>
+      <Drawer
+        isOpen={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        size="lg"
+        anchor="top"
+      >
+        <DrawerBackdrop />
+        <DrawerContent>
+          <DrawerHeader>
+            <Text>Heading</Text>
+          </DrawerHeader>
+          <DrawerBody></DrawerBody>
+          <DrawerFooter>
+            <TouchableHighlight
+              onPress={() => {
+                setOpen(false);
+              }}
+            >
+              <Text>Hello</Text>
+            </TouchableHighlight>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
       <Text style={styles.title}>
         {" "}
         {props.title} {props.params ? props.params.id : ""}
