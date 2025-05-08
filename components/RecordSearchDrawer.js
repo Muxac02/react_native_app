@@ -39,6 +39,7 @@ import { ChevronDownIcon } from "@/components/ui/icon";
 import { ChevronUpIcon } from "@/components/ui/icon";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import DateTimePicker from "@/components/DateTimePicker";
 
 export default function RecordSearchDrawer(props) {
   const router = useRouter();
@@ -197,7 +198,16 @@ export default function RecordSearchDrawer(props) {
                     }}
                   </AccordionTrigger>
                 </AccordionHeader>
-                <AccordionContent className="p-0"></AccordionContent>
+                <AccordionContent className="p-0">
+                  <View>
+                    <Text>Начало</Text>
+                    <DateTimePicker />
+                  </View>
+                  <View>
+                    <Text>Конец</Text>
+                    <DateTimePicker />
+                  </View>
+                </AccordionContent>
               </AccordionItem>
               <AccordionItem value="b">
                 <AccordionHeader>
