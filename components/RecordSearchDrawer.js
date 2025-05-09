@@ -35,24 +35,114 @@ import {
   SelectDragIndicatorWrapper,
   SelectItem,
 } from "@/components/ui/select";
+import { Button, ButtonText } from "@/components/ui/button";
 import { ChevronDownIcon } from "@/components/ui/icon";
 import { ChevronUpIcon } from "@/components/ui/icon";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import DateTimePicker from "@/components/DateTimePicker";
+import { Switch } from "@/components/ui/switch";
+import { HStack } from "@/components/ui/hstack";
 
 export default function RecordSearchDrawer(props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [searchParams, setSearchParams] = useState({
-    ship: "",
-    port: "",
-    arrive_date_start: "",
-    arrive_date_end: "",
-    sail_date_start: "",
-    sail_date_end: "",
-    archived: false,
+  const [ship, setShip] = useState("default");
+  const [port, setPort] = useState("default");
+  const [additionalSearchParams, setAdditionalSearchParams] = useState([]);
+  const [arriveDateInfo, setArriveDateInfo] = useState({
+    start: new Date(),
+    end: new Date(),
+    startChanged: false,
+    endChanged: false,
   });
+  const [sailDateInfo, setSailDateInfo] = useState({
+    start: new Date(),
+    end: new Date(),
+    startChanged: false,
+    endChanged: false,
+  });
+  const [archived, setArchived] = useState(false);
+  const handleDateInfoChanged = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    if (event.pos === "start") {
+      if (event.type === "set") {
+        event.dir === "arrive"
+          ? setArriveDateInfo({
+              ...arriveDateInfo,
+              start: currentDate,
+              startChanged: true,
+            })
+          : setSailDateInfo({
+              ...sailDateInfo,
+              start: currentDate,
+              startChanged: true,
+            });
+      }
+    } else if (event.pos === "end") {
+      if (event.type === "set") {
+        event.dir === "arrive"
+          ? setArriveDateInfo({
+              ...arriveDateInfo,
+              end: currentDate,
+              endChanged: true,
+            })
+          : setSailDateInfo({
+              ...sailDateInfo,
+              end: currentDate,
+              endChanged: true,
+            });
+      }
+    } else {
+      console.error("date time picker diapozon handle changed error");
+    }
+  };
+  const handleDateInfoClear = (dir, pos) => {
+    if (dir === "arrive") {
+      if (pos === "start") {
+        setArriveDateInfo({
+          ...arriveDateInfo,
+          start: new Date(),
+          startChanged: false,
+        });
+      } else if (pos === "end") {
+        setArriveDateInfo({
+          ...arriveDateInfo,
+          end: new Date(),
+          endChanged: false,
+        });
+      }
+    } else if (dir === "sail") {
+      if (pos === "start") {
+        setSailDateInfo({
+          ...sailDateInfo,
+          start: new Date(),
+          startChanged: false,
+        });
+      } else if (pos === "end") {
+        setSailDateInfo({
+          ...sailDateInfo,
+          end: new Date(),
+          endChanged: false,
+        });
+      }
+    }
+    if (pos === "all") {
+      dir === "arrive"
+        ? setArriveDateInfo({
+            start: new Date(),
+            end: new Date(),
+            startChanged: false,
+            endChanged: false,
+          })
+        : setSailDateInfo({
+            start: new Date(),
+            end: new Date(),
+            startChanged: false,
+            endChanged: false,
+          });
+    }
+  };
   const ships = [
     {
       number: 1,
@@ -128,7 +218,7 @@ export default function RecordSearchDrawer(props) {
         onClose={() => {
           setOpen(false);
         }}
-        size="lg"
+        size="md"
         anchor="top"
       >
         <DrawerBackdrop />
@@ -139,7 +229,7 @@ export default function RecordSearchDrawer(props) {
           <DrawerBody>
             <Select
               onValueChange={(val) => {
-                setSearchParams({ ...searchParams, ship: val });
+                setShip(val);
               }}
             >
               <SelectTrigger variant="underlined" size="lg">
@@ -169,17 +259,61 @@ export default function RecordSearchDrawer(props) {
                 </SelectContent>
               </SelectPortal>
             </Select>
+
+            <Select
+              onValueChange={(val) => {
+                setPort(val);
+              }}
+            >
+              <SelectTrigger variant="underlined" size="lg">
+                <SelectInput
+                  placeholder="Порт"
+                  style={{ fontSize: 16, padding: 0 }}
+                />
+                <SelectIcon
+                  style={{ marginLeft: "auto" }}
+                  as={ChevronDownIcon}
+                />
+              </SelectTrigger>
+              <SelectPortal>
+                <SelectBackdrop />
+                <SelectContent>
+                  <SelectDragIndicatorWrapper>
+                    <SelectDragIndicator />
+                  </SelectDragIndicatorWrapper>
+                  <SelectItem label="Порт" value="default" />
+                  {ports.map((port) => (
+                    <SelectItem
+                      label={port.name}
+                      value={port.number.toString()}
+                      key={"port_select_item" + port.number.toString()}
+                    />
+                  ))}
+                </SelectContent>
+              </SelectPortal>
+            </Select>
             <Accordion
               size="lg"
               variant="filled"
               type="multiple"
               isCollapsible={true}
               isDisabled={false}
-              className="mt-2"
+              className="mt-4 shadow-0"
+              onValueChange={(ev) => {
+                const diff = additionalSearchParams.filter(
+                  (e) => !ev.includes(e)
+                );
+                if (diff == "arrival_dates") {
+                  handleDateInfoClear("arrive", "all");
+                } else if (diff == "sail_dates") {
+                  handleDateInfoClear("sail", "all");
+                }
+                setAdditionalSearchParams(ev);
+              }}
             >
-              <AccordionItem value="a">
+              <AccordionItem value="arrival_dates">
                 <AccordionHeader>
-                  <AccordionTrigger className="p-0 pb-2">
+                  <AccordionTrigger className="p-0 pb-3">
                     {({ isExpanded }) => {
                       return (
                         <>
@@ -198,25 +332,41 @@ export default function RecordSearchDrawer(props) {
                     }}
                   </AccordionTrigger>
                 </AccordionHeader>
-                <AccordionContent className="p-0">
+                <AccordionContent className="p-2">
                   <View>
-                    <Text>Начало</Text>
-                    <DateTimePicker />
+                    <Text style={{ fontSize: 14, paddingLeft: 4 }}>Начало</Text>
+                    <DateTimePicker
+                      date={arriveDateInfo.start}
+                      changed={arriveDateInfo.startChanged}
+                      onChange={handleDateInfoChanged}
+                      onClear={handleDateInfoClear}
+                      dir={"arrive"}
+                      pos={"start"}
+                    />
                   </View>
-                  <View>
-                    <Text>Конец</Text>
-                    <DateTimePicker />
+                  <View style={{ marginBottom: 8 }}>
+                    <Text style={{ fontSize: 14, paddingLeft: 4 }}>Конец</Text>
+                    <DateTimePicker
+                      date={arriveDateInfo.end}
+                      changed={arriveDateInfo.endChanged}
+                      onChange={handleDateInfoChanged}
+                      onClear={handleDateInfoClear}
+                      dir={"arrive"}
+                      pos={"end"}
+                    />
                   </View>
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="b">
+              <AccordionItem value="sail_dates">
                 <AccordionHeader>
-                  <AccordionTrigger>
+                  <AccordionTrigger className="p-0 pb-3">
                     {({ isExpanded }) => {
                       return (
                         <>
-                          <AccordionTitleText>
-                            What payment methods do you accept?
+                          <AccordionTitleText
+                            style={{ fontSize: 18, fontWeight: "400" }}
+                          >
+                            Промежуток даты ухода в рейс
                           </AccordionTitleText>
                           {isExpanded ? (
                             <AccordionIcon as={ChevronUpIcon} />
@@ -228,24 +378,69 @@ export default function RecordSearchDrawer(props) {
                     }}
                   </AccordionTrigger>
                 </AccordionHeader>
-                <AccordionContent>
-                  <AccordionContentText>
-                    We accept all major credit cards, including Visa,
-                    Mastercard, and American Express. We also support payments
-                    through PayPal.
-                  </AccordionContentText>
+                <AccordionContent className="p-2">
+                  <View>
+                    <Text style={{ fontSize: 14, paddingLeft: 4 }}>Начало</Text>
+                    <DateTimePicker
+                      date={sailDateInfo.start}
+                      changed={sailDateInfo.startChanged}
+                      onChange={handleDateInfoChanged}
+                      onClear={handleDateInfoClear}
+                      dir={"sail"}
+                      pos={"start"}
+                    />
+                  </View>
+                  <View style={{ marginBottom: 8 }}>
+                    <Text style={{ fontSize: 14, paddingLeft: 4 }}>Конец</Text>
+                    <DateTimePicker
+                      date={sailDateInfo.end}
+                      changed={sailDateInfo.endChanged}
+                      onChange={handleDateInfoChanged}
+                      onClear={handleDateInfoClear}
+                      dir={"sail"}
+                      pos={"end"}
+                    />
+                  </View>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
+            <HStack space="md" style={{ alignSelf: "center" }}>
+              <Switch
+                size="lg"
+                isDisabled={false}
+                trackColor={{
+                  false: "rgba(95, 96, 98, 0.9)",
+                  true: "rgba(0, 50, 116, 1)",
+                }}
+                thumbColor={"#fff"}
+                activeThumbColor={"#fff"}
+                onValueChange={(val) => {
+                  setArchived(val);
+                }}
+              />
+              <Text
+                style={{ textAlign: "center", textAlignVertical: "center" }}
+              >
+                Архивные
+              </Text>
+            </HStack>
           </DrawerBody>
           <DrawerFooter>
-            <TouchableHighlight
+            <Button
               onPress={() => {
+                console.log({
+                  ship,
+                  port,
+                  arriveDateInfo,
+                  sailDateInfo,
+                  archived,
+                });
                 setOpen(false);
               }}
+              style={{ flex: 1, backgroundColor: "#025EA1", borderRadius: 8 }}
             >
-              <Text>Hello</Text>
-            </TouchableHighlight>
+              <ButtonText>Поиск</ButtonText>
+            </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

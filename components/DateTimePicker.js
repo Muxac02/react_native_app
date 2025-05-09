@@ -4,16 +4,10 @@ import { useState } from "react";
 import { Icon, CloseIcon } from "@/components/ui/icon";
 
 export default function DateTimePicker(props) {
-  const clientTime = new Date();
-  const [date, setDate] = useState(clientTime);
-  const [dateChange, setDateChanged] = useState(false);
-
+  const date = props.date;
+  const dateChange = props.changed;
   const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setDate(currentDate);
-    if (event.type === "set") {
-      setDateChanged(true);
-    }
+    props.onChange({ ...event, dir: props.dir, pos: props.pos }, selectedDate);
   };
 
   const showMode = (currentMode) => {
@@ -62,8 +56,7 @@ export default function DateTimePicker(props) {
       {dateChange ? (
         <TouchableHighlight
           onPress={() => {
-            setDate(clientTime);
-            setDateChanged(false);
+            props.onClear(props.dir, props.pos);
           }}
           style={styles.clearBut}
           underlayColor={"rgba(127, 124, 124, 0.4)"}
@@ -83,6 +76,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     flexDirection: "row",
+    marginVertical: 4,
   },
   dateField: {
     flex: 1,
