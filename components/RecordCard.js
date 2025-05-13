@@ -236,7 +236,6 @@ export default function RecordCard(props) {
       <TouchableHighlight
         underlayColor="#6CACE4"
         style={styles.container}
-        onLongPress={() => console.log(`SHOW MENU FOR ${data.number} record`)}
         onPress={() => {
           router.push({
             pathname: "/record/[id]",

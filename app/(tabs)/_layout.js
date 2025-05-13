@@ -103,6 +103,14 @@ export default function TabLayout() {
           animation: "none",
         }}
       />
+      <Tabs.Screen
+        name="search"
+        options={{
+          title: "Поиск",
+          href: null,
+          animation: "none",
+        }}
+      />
     </Tabs>
   );
 }

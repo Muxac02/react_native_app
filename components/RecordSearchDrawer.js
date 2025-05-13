@@ -40,9 +40,10 @@ import { ChevronDownIcon } from "@/components/ui/icon";
 import { ChevronUpIcon } from "@/components/ui/icon";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import DateTimePicker from "@/components/DateTimePicker";
+import DateTimePicker from "@/components/DateTimePickerForDrawer";
 import { Switch } from "@/components/ui/switch";
 import { HStack } from "@/components/ui/hstack";
+import { Icon, SearchIcon } from "@/components/ui/icon";
 
 export default function RecordSearchDrawer(props) {
   const router = useRouter();
@@ -207,11 +208,13 @@ export default function RecordSearchDrawer(props) {
   return (
     <View>
       <TouchableHighlight
+        style={{ borderRadius: 24 }}
+        underlayColor={"rgba(165, 165, 165, 0.4)"}
         onPress={() => {
           setOpen(true);
         }}
       >
-        <Image source={require(`../assets/omni.jpg`)} style={styles.icon} />
+        <Icon as={SearchIcon} style={styles.icon} />
       </TouchableHighlight>
       <Drawer
         isOpen={open}
@@ -428,12 +431,16 @@ export default function RecordSearchDrawer(props) {
           <DrawerFooter>
             <Button
               onPress={() => {
-                console.log({
-                  ship,
-                  port,
-                  arriveDateInfo,
-                  sailDateInfo,
-                  archived,
+                const data = {
+                  ship: ship,
+                  port: port,
+                  arriveDateInfo: JSON.stringify(arriveDateInfo),
+                  sailDateInfo: JSON.stringify(sailDateInfo),
+                  archived: archived,
+                };
+                router.push({
+                  pathname: "/search",
+                  params: data,
                 });
                 setOpen(false);
               }}
