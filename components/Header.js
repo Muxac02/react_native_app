@@ -31,7 +31,7 @@ export default function Header(props) {
         >
           <Icon as={ArrowLeftIcon} style={styles.icon} />
         </TouchableHighlight>
-      ) : (
+      ) : currentScreen != "profile" ? (
         <TouchableHighlight
           style={{ borderRadius: 24 }}
           underlayColor={"rgba(165, 165, 165, 0.4)"}
@@ -41,12 +41,21 @@ export default function Header(props) {
         >
           <Icon as={MenuIcon} style={styles.icon} />
         </TouchableHighlight>
+      ) : (
+        <View style={{ width: 48 }}></View>
       )}
       <Text style={styles.title}>
         {props.title} {props.params ? props.params.id : ""}
       </Text>
       <TouchableHighlight
-        style={{ borderRadius: 24 }}
+        style={{
+          borderRadius: 24,
+          backgroundColor:
+            currentScreen == "profile"
+              ? "rgba(165, 165, 165, 0.4)"
+              : "rgba(255,255,255,0)",
+        }}
+        disabled={currentScreen == "profile" ? true : false}
         underlayColor={"rgba(165, 165, 165, 0.4)"}
         onPress={() => {
           router.navigate("/profile");

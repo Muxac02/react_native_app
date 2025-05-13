@@ -6,6 +6,7 @@ import {
   Image,
   TouchableHighlight,
 } from "react-native";
+import TextField from "@/components/TextField";
 import { useLocalSearchParams } from "expo-router";
 
 export default function Record() {
@@ -52,33 +53,27 @@ export default function Record() {
           </Text>
         </View>
       </View>
-      <Text style={styles.textField}>
-        {`Дата прибытия в порт:\n${
-          data.arrive_date ? new Date(data.arrive_date).toLocaleString() : " "
-        }`}
-      </Text>
-      <Text style={styles.textField}>
-        {`Дата ухода в рейс:\n${
-          data.sail_date ? new Date(data.sail_date).toLocaleString() : " "
-        }`}
-      </Text>
-      <Text style={styles.textField}>
-        {`Реальная дата прибытия в порт:\n${
-          data.arrive_date_real
-            ? new Date(data.arrive_date_real).toLocaleString()
-            : " "
-        }`}
-      </Text>
-      <Text style={styles.textField}>
-        {`Реальная дата ухода в рейс:\n${
-          data.sail_date_real
-            ? new Date(data.sail_date_real).toLocaleString()
-            : " "
-        }`}
-      </Text>
-      <Text style={styles.textField}>
-        {`Комментарий:\n${data.comment ? data.comment : " "}`}
-      </Text>
+      <TextField
+        title={"Дата прибытия в порт"}
+        type={"Date"}
+        text={data.arrive_date}
+      />
+      <TextField
+        title={"Дата ухода в рейс"}
+        type={"Date"}
+        text={data.sail_date}
+      />
+      <TextField
+        title={"Реальная дата прибытия в порт"}
+        type={"Date"}
+        text={data.arrive_date_real}
+      />
+      <TextField
+        title={"Реальная дата ухода в рейс"}
+        type={"Date"}
+        text={data.sail_date_real}
+      />
+      <TextField title={"Комментарий"} text={data.comment} />
       <View style={styles.buttonGroup}>
         <TouchableHighlight
           disabled={arriveButtonDisabled}
@@ -140,8 +135,6 @@ export default function Record() {
   );
 }
 
-const inputFieldRadius = 8;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -157,8 +150,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "rgba(95, 96, 98, 0.9)",
     backgroundColor: "#fff",
-    borderTopRightRadius: inputFieldRadius,
-    borderTopLeftRadius: inputFieldRadius,
+    borderTopRightRadius: 8,
+    borderTopLeftRadius: 8,
     padding: 8,
     textAlign: "center",
     textAlignVertical: "center",
@@ -170,8 +163,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(95, 96, 98, 0.9)",
     marginVertical: 4,
     backgroundColor: "#fff",
-    borderTopRightRadius: inputFieldRadius,
-    borderTopLeftRadius: inputFieldRadius,
+    borderTopRightRadius: 8,
+    borderTopLeftRadius: 8,
     marginHorizontal: 12,
     padding: 4,
     textAlign: "left",
