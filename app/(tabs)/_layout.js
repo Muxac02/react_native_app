@@ -111,6 +111,14 @@ export default function TabLayout() {
           animation: "none",
         }}
       />
+      <Tabs.Screen
+        name="report/[id]/index"
+        options={{
+          title: "Отчет №",
+          href: null,
+          animation: "none",
+        }}
+      />
     </Tabs>
   );
 }
