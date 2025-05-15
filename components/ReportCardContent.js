@@ -9,6 +9,7 @@ import {
 import Collapsible from "react-native-collapsible";
 import { useState } from "react";
 import ReportCardBlock from "./ReportCardBlock";
+import { router } from "expo-router";
 
 export default function ReportCardContent(props) {
   const data = props.data;
@@ -73,11 +74,15 @@ export default function ReportCardContent(props) {
     );
   };
   const [open, setOpen] = useState(false);
-  //console.log(data);
   return (
     <TouchableHighlight
       onPress={() => {
-        console.log(`go to /record/${data.number}`);
+        router.push({
+          pathname: "/report/[id]",
+          params: {
+            id: data.number,
+          },
+        });
       }}
       style={styles.container}
       underlayColor="#6CACE4"
@@ -97,7 +102,6 @@ export default function ReportCardContent(props) {
               return (
                 <ReportCardBlock
                   data={block}
-                  type="content"
                   key={`reportCard${data.number}BlockConent${block.number}`}
                   cardNumber={data.number}
                 />
