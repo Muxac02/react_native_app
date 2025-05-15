@@ -2,7 +2,8 @@ import { Slot } from "expo-router";
 import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { HoldMenuProvider } from "react-native-hold-menu";
-import { createContext, useContext } from "react";
+import { PaperProvider } from "react-native-paper";
+import { createContext } from "react";
 
 export const ReportsContext = createContext();
 
@@ -26,23 +27,25 @@ export default function Root() {
           content: [
             {
               number: 1,
+              ship: 'СУАЛ "Сибирь"',
               port: "МУР",
               arrive_date: "2025-03-01T10:00:00.000000",
               sail_date: "2025-03-01T10:00:00.000000",
               arrive_date_real: "2025-03-01T10:00:00.000000",
               sail_date_real: "2025-03-01T10:00:00.000000",
               comment:
-                "График от 14.02.2025 График от 14.02.2025 График от 14.02.2025",
+                "График от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025",
             },
             {
               number: 2,
+              ship: 'СУАЛ "Сибирь"',
               port: "МУР",
               arrive_date: "2025-03-01T10:00:00.000000",
               sail_date: "2025-03-01T10:00:00.000000",
               arrive_date_real: "2025-03-01T10:00:00.000000",
               sail_date_real: "2025-03-01T10:00:00.000000",
               comment:
-                "График от 14.02.2025 График от 14.02.2025 График от 14.02.2025",
+                "График от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025",
             },
           ],
         },
@@ -64,7 +67,7 @@ export default function Root() {
               arrive_date_real: "2025-03-01T10:00:00.000000",
               sail_date_real: "2025-03-01T10:00:00.000000",
               comment:
-                "График от 14.02.2025 График от 14.02.2025 График от 14.02.2025",
+                "График от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025",
             },
             {
               number: 2,
@@ -75,7 +78,7 @@ export default function Root() {
               arrive_date_real: "2025-03-01T10:00:00.000000",
               sail_date_real: "2025-03-01T10:00:00.000000",
               comment:
-                "График от 14.02.2025 График от 14.02.2025 График от 14.02.2025",
+                "График от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025",
             },
             {
               number: 3,
@@ -86,7 +89,7 @@ export default function Root() {
               arrive_date_real: "2025-03-01T10:00:00.000000",
               sail_date_real: "2025-03-01T10:00:00.000000",
               comment:
-                "График от 14.02.2025 График от 14.02.2025 График от 14.02.2025",
+                "График от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025",
             },
             {
               number: 4,
@@ -97,7 +100,7 @@ export default function Root() {
               arrive_date_real: "2025-03-01T10:00:00.000000",
               sail_date_real: "2025-03-01T10:00:00.000000",
               comment:
-                "График от 14.02.2025 График от 14.02.2025 График от 14.02.2025",
+                "График от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025",
             },
           ],
         },
@@ -108,7 +111,9 @@ export default function Root() {
     <ReportsContext.Provider value={reports}>
       <GluestackUIProvider mode="light">
         <HoldMenuProvider theme="light" paddingBottom={48}>
-          <Slot />
+          <PaperProvider>
+            <Slot />
+          </PaperProvider>
         </HoldMenuProvider>
       </GluestackUIProvider>
     </ReportsContext.Provider>

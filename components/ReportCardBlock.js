@@ -48,33 +48,35 @@ export default function ReportCardBlock(props) {
         <Icon as={icon} size="" />
         <Text style={styles.blockName}>{name}</Text>
       </View>
-      {data.isGroup ? (
-        <View>
-          <Text style={styles.blockGrouppedText}>Групповая</Text>
-          <Text style={styles.blockShips}>Суда:</Text>
-          {data.ships.map((ship) => {
-            return (
-              <Text
-                key={`ship${ship}InListOfBlock${data.number}OfCard${
-                  props.cardNumber
-                }${
-                  currentScreen == "report"
-                    ? "ReportScreen"
-                    : "ReportsListScreen"
-                }`}
-                style={[{ marginLeft: 6 }, styles.blockShips]}
-              >
-                {`\u2022 ${ship}`}
-              </Text>
-            );
-          })}
-        </View>
-      ) : (
-        <View>
-          <Text style={styles.blockShips}>Судно:</Text>
-          <Text style={styles.blockShips}>{data.ships[0]}</Text>
-        </View>
-      )}
+      {currentScreen == "reports" ? (
+        data.isGroup ? (
+          <View>
+            <Text style={styles.blockGrouppedText}>Групповая</Text>
+            <Text style={styles.blockShips}>Суда:</Text>
+            {data.ships.map((ship) => {
+              return (
+                <Text
+                  key={`ship${ship}InListOfBlock${data.number}OfCard${
+                    props.cardNumber
+                  }${
+                    currentScreen == "report"
+                      ? "ReportScreen"
+                      : "ReportsListScreen"
+                  }`}
+                  style={[{ marginLeft: 6 }, styles.blockShips]}
+                >
+                  {`\u2022 ${ship}`}
+                </Text>
+              );
+            })}
+          </View>
+        ) : (
+          <View>
+            <Text style={styles.blockShips}>Судно:</Text>
+            <Text style={styles.blockShips}>{data.ships[0]}</Text>
+          </View>
+        )
+      ) : null}
       <Text style={styles.blockDates}>
         {new Date(data.dateFrom).toLocaleDateString()}
         {" --- "}
@@ -84,12 +86,19 @@ export default function ReportCardBlock(props) {
         <View
           style={{
             borderTopWidth: 2,
+            paddingTop: 4,
             borderColor: "rgba(127, 127, 127, 0.4)",
             width: "100%",
             height: 150,
           }}
         >
-          {data.type == "table" ? <ReportCardBlockTable data={data} /> : null}
+          {data.type == "table" ? (
+            <ReportCardBlockTable
+              data={data}
+              blockNumber={data.number}
+              cardNumber={props.cardNumber}
+            />
+          ) : null}
         </View>
       ) : null}
     </View>
