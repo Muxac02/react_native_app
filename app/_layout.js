@@ -36,17 +36,6 @@ export default function Root() {
               comment:
                 "График от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025",
             },
-            {
-              number: 2,
-              ship: 'СУАЛ "Сибирь"',
-              port: "МУР",
-              arrive_date: "2025-03-01T10:00:00.000000",
-              sail_date: "2025-03-01T10:00:00.000000",
-              arrive_date_real: "2025-03-01T10:00:00.000000",
-              sail_date_real: "2025-03-01T10:00:00.000000",
-              comment:
-                "График от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025",
-            },
           ],
         },
         {
@@ -101,6 +90,29 @@ export default function Root() {
               sail_date_real: "2025-03-01T10:00:00.000000",
               comment:
                 "График от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025",
+            },
+          ],
+        },
+        {
+          number: 3,
+          type: "table",
+          name: "points",
+          isGroup: true,
+          ships: ['СУАЛ "Сибирь"', 'ГУАЛ "Арктика"'],
+          dateFrom: "2025-01-1",
+          dateTo: "2025-04-10",
+          content: [
+            {
+              number: 1,
+              ship: 'ГУАЛ "Арктика"',
+              arrive: { inTime: 8, late: 2, total: 10 },
+              sail: { inTime: 9, late: 1, total: 10 },
+            },
+            {
+              number: 2,
+              ship: 'СУАЛ "Сибирь"',
+              arrive: { inTime: 8, late: 2, total: 10 },
+              sail: { inTime: 9, late: 1, total: 10 },
             },
           ],
         },
