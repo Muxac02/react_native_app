@@ -134,6 +134,8 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     boxShadow: "0 4 6.7 0 rgba(0, 0, 0, 0.25)",
     flexDirection: "column",
+    marginVertical: 4,
+    marginHorizontal: 12,
   },
   head: {
     borderBottomColor: "rgba(127, 127, 127, 0.4)",

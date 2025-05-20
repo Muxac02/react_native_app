@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   View,
   Image,
+  ScrollView,
   TouchableHighlight,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
@@ -58,7 +59,7 @@ export default function Report() {
           <Text style={styles.buttonText}>Отправить</Text>
         </TouchableHighlight>
       </View>
-      <View>
+      <ScrollView>
         {data.content.map((block) => {
           return (
             <View style={styles.block}>
@@ -70,7 +71,7 @@ export default function Report() {
             </View>
           );
         })}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

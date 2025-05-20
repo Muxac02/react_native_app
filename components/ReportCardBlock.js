@@ -89,7 +89,14 @@ export default function ReportCardBlock(props) {
             paddingTop: 4,
             borderColor: "rgba(127, 127, 127, 0.4)",
             width: "100%",
-            height: data.content.length > 1 ? 154 : 110,
+            height:
+              data.content.length > 1
+                ? data.name == "travel"
+                  ? 136
+                  : data.name == "port"
+                  ? 109
+                  : 134
+                : 90,
           }}
         >
           {data.type == "table" ? (
