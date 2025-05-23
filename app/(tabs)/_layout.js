@@ -119,6 +119,14 @@ export default function TabLayout() {
           animation: "none",
         }}
       />
+      {/* <Tabs.Screen
+        name="report/addReport"
+        options={{
+          title: "Создание отчета",
+          href: null,
+          animation: "none",
+        }}
+      /> */}
     </Tabs>
   );
 }

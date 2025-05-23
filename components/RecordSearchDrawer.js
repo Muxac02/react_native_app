@@ -193,7 +193,6 @@ export default function RecordSearchDrawer(props) {
       number: 12,
       name: 'к-в "Россита"',
     },
-    ,
   ];
   const ports = [
     {

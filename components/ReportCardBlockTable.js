@@ -1,9 +1,11 @@
 import React from "react";
 import { ScrollView, View, Text, StyleSheet } from "react-native";
 import { DataTable } from "react-native-paper";
+import { usePathname } from "expo-router";
 
 export default function ReportCardBlockTable(props) {
   const data = props.data;
+  const currentScreen = usePathname().split("/")[2];
   const CP_StatisticCell = (total, inTime, late) => {
     return (
       <View
@@ -158,7 +160,9 @@ export default function ReportCardBlockTable(props) {
           {data.content.map((item) => (
             <View
               style={styles.dataRow}
-              key={`row${item.number}forBlock${props.blockNumber}forCard${props.cardNumber}`}
+              key={`row${item.number}forBlock${props.blockNumber}forCard${
+                props.cardNumber ? props.cardNumber : "inReportCreationScreen"
+              }screen${currentScreen}`}
             >
               <View style={[styles.dataCell, { flex: 2 }]}>
                 <Text style={styles.dataText}>{item.ship}</Text>
@@ -259,7 +263,9 @@ export default function ReportCardBlockTable(props) {
           {data.content.map((item) => (
             <View
               style={styles.dataRow}
-              key={`row${item.number}forBlock${props.blockNumber}forCard${props.cardNumber}`}
+              key={`row${item.number}forBlock${props.blockNumber}forCard${
+                props.cardNumber ? props.cardNumber : "inReportCreationScreen"
+              }screen${currentScreen}`}
             >
               <View style={[styles.dataCell, { flex: 2 }]}>
                 <Text style={styles.dataText}>{item.ship}</Text>
@@ -338,7 +344,11 @@ export default function ReportCardBlockTable(props) {
             <ScrollView style={{ height: "100%" }} nestedScrollEnabled>
               {data.content.map((item) => (
                 <DataTable.Row
-                  key={`row${item.number}forBlock${props.blockNumber}forCard${props.cardNumber}`}
+                  key={`row${item.number}forBlock${props.blockNumber}forCard${
+                    props.cardNumber
+                      ? props.cardNumber
+                      : "inReportCreationScreen"
+                  }screen${currentScreen}`}
                   style={{ paddingHorizontal: 0, borderBottomWidth: 0 }}
                 >
                   <DataTable.Cell
@@ -425,7 +435,11 @@ export default function ReportCardBlockTable(props) {
             <ScrollView style={{ height: "100%" }} nestedScrollEnabled>
               {data.content.map((item) => (
                 <DataTable.Row
-                  key={`row${item.number}forBlock${props.blockNumber}forCard${props.cardNumber}`}
+                  key={`row${item.number}forBlock${props.blockNumber}forCard${
+                    props.cardNumber
+                      ? props.cardNumber
+                      : "inReportCreationScreen"
+                  }screen${currentScreen}`}
                   style={{ paddingHorizontal: 0, borderBottomWidth: 0 }}
                 >
                   <DataTable.Cell

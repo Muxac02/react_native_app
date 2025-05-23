@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { Icon } from "./ui/icon";
 import { usePathname } from "expo-router";
 import {
@@ -12,6 +12,7 @@ import ReportCardBlockTable from "./ReportCardBlockTable";
 export default function ReportCardBlock(props) {
   const currentScreen = usePathname().split("/")[1];
   const data = props.data;
+  const loading = props.loading == undefined ? false : props.loading;
   let icon = "";
   switch (data.type) {
     case "table":
@@ -58,6 +59,8 @@ export default function ReportCardBlock(props) {
                 <Text
                   key={`ship${ship}InListOfBlock${data.number}OfCard${
                     props.cardNumber
+                      ? props.cardNumber
+                      : "InReportCreationScreen"
                   }${
                     currentScreen == "report"
                       ? "ReportScreen"
@@ -83,30 +86,34 @@ export default function ReportCardBlock(props) {
         {new Date(data.dateTo).toLocaleDateString()}
       </Text>
       {currentScreen == "report" ? (
-        <View
-          style={{
-            borderTopWidth: 2,
-            paddingTop: 4,
-            borderColor: "rgba(127, 127, 127, 0.4)",
-            width: "100%",
-            height:
-              data.content.length > 1
-                ? data.name == "travel"
-                  ? 136
-                  : data.name == "port"
-                  ? 109
-                  : 134
-                : 90,
-          }}
-        >
-          {data.type == "table" ? (
-            <ReportCardBlockTable
-              data={data}
-              blockNumber={data.number}
-              cardNumber={props.cardNumber}
-            />
-          ) : null}
-        </View>
+        loading ? (
+          <ActivityIndicator />
+        ) : (
+          <View
+            style={{
+              borderTopWidth: 2,
+              paddingTop: 4,
+              borderColor: "rgba(127, 127, 127, 0.4)",
+              width: "100%",
+              height:
+                data.content.length > 1
+                  ? data.name == "travel"
+                    ? 136
+                    : data.name == "port"
+                    ? 109
+                    : 134
+                  : 90,
+            }}
+          >
+            {data.type == "table" ? (
+              <ReportCardBlockTable
+                data={data}
+                blockNumber={data.number}
+                cardNumber={props.cardNumber}
+              />
+            ) : null}
+          </View>
+        )
       ) : null}
     </View>
   );
