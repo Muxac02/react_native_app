@@ -16,58 +16,10 @@ import DateTimePicker from "@/components/DateTimePicker";
 import SelectField from "@/components/SelectField";
 import { Icon, CloseCircleIcon } from "@/components/ui/icon";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { useSelect } from "@/contexts/SelectContext";
 
 export default function AddReport() {
-  const shipsList = [
-    {
-      number: 1,
-      name: 'а\\л "Ямал"',
-    },
-    {
-      number: 2,
-      name: 'а\\л "50 лет Победы"',
-    },
-    {
-      number: 3,
-      name: 'а\\л "Таймыр"',
-    },
-    {
-      number: 4,
-      name: 'а\\л "Вайгач"',
-    },
-    {
-      number: 5,
-      name: 'СУАЛ "Арктика"',
-    },
-    {
-      number: 6,
-      name: 'СУАЛ "Сибирь"',
-    },
-    {
-      number: 7,
-      name: 'СУАЛ "Урал"',
-    },
-    {
-      number: 8,
-      name: 'а\\л-к "Севморпуть"',
-    },
-    {
-      number: 9,
-      name: 'а.т.о. "Имандра"',
-    },
-    {
-      number: 10,
-      name: 'а.т.о. "Лотта"',
-    },
-    {
-      number: 11,
-      name: 'с-т "Серебрянка"',
-    },
-    {
-      number: 12,
-      name: 'к-в "Россита"',
-    },
-  ];
+  const { ships } = useSelect();
   const [data, setData] = useState([]);
   const [shouldUpdate, setShouldUpdate] = useState(0);
   const [name, setName] = useState("records");
@@ -75,7 +27,7 @@ export default function AddReport() {
   const [finishDate, setFinishDate] = useState(new Date(0));
   const [modalVisible, setModalVisible] = useState(false);
   const [infoModalVisible, setInfoModalVisible] = useState(false);
-  const [ships, setShips] = useState([]);
+  const [shipsSelected, setShipsSelected] = useState([]);
   const selectVariants = [
     { number: 1, name: "records" },
     { number: 2, name: "points" },
@@ -96,14 +48,14 @@ export default function AddReport() {
       number: number,
       type: "table",
       name: name,
-      isGroup: ships.length == 1,
-      ships: ships,
+      isGroup: shipsSelected.length == 1,
+      ships: shipsSelected,
       dateFrom: startDate.toDateString(),
       dateTo: finishDate.toDateString(),
       content: [],
     });
     setData(newData);
-    setShips([]);
+    setShipsSelected([]);
     // const int = setTimeout(() => {
     //   let newData = data;
     //   newData.find((item) => item.number == number).content = [
@@ -221,12 +173,16 @@ export default function AddReport() {
               </View>
               <View>
                 <Text style={styles.modalTitle}>Дата конца периода</Text>
-                <DateTimePicker date={finishDate} setDate={setFinishDate} />
+                <DateTimePicker
+                  minDate={startDate}
+                  date={finishDate}
+                  setDate={setFinishDate}
+                />
               </View>
               <Text style={styles.modalTitle}>Судно/суда</Text>
               <ScrollView style={{ maxHeight: 200 }}>
                 <View>
-                  {shipsList.map((ship) => (
+                  {ships.map((ship) => (
                     <BouncyCheckbox
                       size={25}
                       fillColor="rgb(0, 50, 116)"
@@ -235,15 +191,17 @@ export default function AddReport() {
                       key={`checkBox${ship.number}`}
                       textStyle={{
                         textDecorationLine:
-                          ships.findIndex((s) => s == ship.number) != -1
+                          shipsSelected.findIndex((s) => s == ship.number) != -1
                             ? "none"
                             : "line-through",
                       }}
                       onPress={(isChecked) => {
                         if (isChecked) {
-                          setShips([...ships, ship.number]);
+                          setShipsSelected([...shipsSelected, ship.number]);
                         } else {
-                          setShips(ships.filter((s) => s !== ship.number));
+                          setShipsSelected(
+                            shipsSelected.filter((s) => s !== ship.number)
+                          );
                         }
                       }}
                       style={{ marginVertical: 4 }}
@@ -258,7 +216,7 @@ export default function AddReport() {
                     backgroundColor:
                       startDate.getTime() == 0 ||
                       finishDate.getTime() == 0 ||
-                      ships.length == 0
+                      shipsSelected.length == 0
                         ? "#f0f0f0"
                         : "rgb(0, 50, 116)",
                   },
@@ -270,7 +228,7 @@ export default function AddReport() {
                 disabled={
                   startDate.getTime() == 0 ||
                   finishDate.getTime() == 0 ||
-                  ships.length == 0
+                  shipsSelected.length == 0
                 }
               >
                 <Text style={styles.cancelText}>Подтвердить</Text>

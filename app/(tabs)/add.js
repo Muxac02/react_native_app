@@ -8,69 +8,10 @@ import {
 import DateTimePicker from "@/components/DateTimePicker";
 import SelectField from "@/components/SelectField";
 import { useEffect, useState } from "react";
+import { useSelect } from "@/contexts/SelectContext";
 
 export default function Add() {
-  const ships = [
-    {
-      number: 1,
-      name: 'а\\л "Ямал"',
-    },
-    {
-      number: 2,
-      name: 'а\\л "50 лет Победы"',
-    },
-    {
-      number: 3,
-      name: 'а\\л "Таймыр"',
-    },
-    {
-      number: 4,
-      name: 'а\\л "Вайгач"',
-    },
-    {
-      number: 5,
-      name: 'СУАЛ "Арктика"',
-    },
-    {
-      number: 6,
-      name: 'СУАЛ "Сибирь"',
-    },
-    {
-      number: 7,
-      name: 'СУАЛ "Урал"',
-    },
-    {
-      number: 8,
-      name: 'а\\л-к "Севморпуть"',
-    },
-    {
-      number: 9,
-      name: 'а.т.о. "Имандра"',
-    },
-    {
-      number: 10,
-      name: 'а.т.о. "Лотта"',
-    },
-    {
-      number: 11,
-      name: 'с-т "Серебрянка"',
-    },
-    {
-      number: 12,
-      name: 'к-в "Россита"',
-    },
-    ,
-  ];
-  const ports = [
-    {
-      name: "МУР",
-      number: 1,
-    },
-    {
-      name: "СПб",
-      number: 2,
-    },
-  ];
+  const { ships, ports } = useSelect();
   const [ship, setShip] = useState("");
   const [port, setPort] = useState("");
   const [arriveDate, setArriveDate] = useState(new Date(0));
@@ -149,7 +90,11 @@ export default function Add() {
       </View>
       <View style={[styles.field, errors.sailDate ? styles.fieldError : {}]}>
         <Text style={styles.fieldLabel}>Дата ухода в рейс *</Text>
-        <DateTimePicker date={sailDate} setDate={setSailDate} />
+        <DateTimePicker
+          minDate={arriveDate}
+          date={sailDate}
+          setDate={setSailDate}
+        />
         <Text style={styles.helperText}>
           {errors.sailDate ? errors.sailDate : ""}
         </Text>
@@ -167,7 +112,11 @@ export default function Add() {
         style={[styles.field, errors.realSailDate ? styles.fieldError : {}]}
       >
         <Text style={styles.fieldLabel}>Реальная дата ухода в рейс</Text>
-        <DateTimePicker date={realSailDate} setDate={setRealSailDate} />
+        <DateTimePicker
+          minDate={realArriveDate}
+          date={realSailDate}
+          setDate={setRealSailDate}
+        />
         <Text style={styles.helperText}>
           {errors.realSailDate ? errors.realSailDate : ""}
         </Text>

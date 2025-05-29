@@ -18,7 +18,9 @@ export default function DateTimePicker(props) {
       mode: currentMode,
       is24Hour: true,
       maximumDate: new Date(new Date().getFullYear() + 1, 11, 31),
-      minimumDate: new Date(new Date().getFullYear(), 0, 1),
+      minimumDate: props.minDate
+        ? props.minDate
+        : new Date(new Date().getFullYear(), 0, 1),
     });
   };
 

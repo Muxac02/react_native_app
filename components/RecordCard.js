@@ -241,15 +241,6 @@ export default function RecordCard(props) {
             pathname: "/record/[id]",
             params: {
               id: data.number,
-              arrive_date: data.arrive_date,
-              port: data.port,
-              sail_date: data.sail_date,
-              sail_date_real: data.sail_date_real,
-              updated_at: data.updated_at,
-              ship: data.ship,
-              created_at: data.created_at,
-              arrive_date_real: data.arrive_date_real,
-              comment: data.comment,
             },
           });
         }}

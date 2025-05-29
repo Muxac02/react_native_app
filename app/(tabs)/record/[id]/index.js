@@ -5,18 +5,28 @@ import {
   View,
   Image,
   TouchableHighlight,
+  ActivityIndicator,
 } from "react-native";
 import TextField from "@/components/TextField";
 import { useLocalSearchParams } from "expo-router";
+import { useRecords } from "@/contexts/RecordsContext";
 
 export default function Record() {
-  const { id, ...data } = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
+  const { records, loading, error } = useRecords();
+  const data = records.find((record) => record.number == id);
   const arriveButtonDisabled = data.arrive_date_real ? true : false;
   const sailButtonDisabled = data.sail_date_real
     ? true
     : arriveButtonDisabled
     ? false
     : true;
+  if (loading)
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" />
+      </SafeAreaView>
+    );
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topTextContainer}>

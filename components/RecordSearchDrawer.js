@@ -44,6 +44,7 @@ import DateTimePicker from "@/components/DateTimePickerForDrawer";
 import { Switch } from "@/components/ui/switch";
 import { HStack } from "@/components/ui/hstack";
 import { Icon, SearchIcon } from "@/components/ui/icon";
+import { useSelect } from "@/contexts/SelectContext";
 
 export default function RecordSearchDrawer(props) {
   const router = useRouter();
@@ -144,66 +145,7 @@ export default function RecordSearchDrawer(props) {
           });
     }
   };
-  const ships = [
-    {
-      number: 1,
-      name: 'а\\л "Ямал"',
-    },
-    {
-      number: 2,
-      name: 'а\\л "50 лет Победы"',
-    },
-    {
-      number: 3,
-      name: 'а\\л "Таймыр"',
-    },
-    {
-      number: 4,
-      name: 'а\\л "Вайгач"',
-    },
-    {
-      number: 5,
-      name: 'СУАЛ "Арктика"',
-    },
-    {
-      number: 6,
-      name: 'СУАЛ "Сибирь"',
-    },
-    {
-      number: 7,
-      name: 'СУАЛ "Урал"',
-    },
-    {
-      number: 8,
-      name: 'а\\л-к "Севморпуть"',
-    },
-    {
-      number: 9,
-      name: 'а.т.о. "Имандра"',
-    },
-    {
-      number: 10,
-      name: 'а.т.о. "Лотта"',
-    },
-    {
-      number: 11,
-      name: 'с-т "Серебрянка"',
-    },
-    {
-      number: 12,
-      name: 'к-в "Россита"',
-    },
-  ];
-  const ports = [
-    {
-      name: "МУР",
-      number: 1,
-    },
-    {
-      name: "СПб",
-      number: 2,
-    },
-  ];
+  const { ships, ports } = useSelect();
   return (
     <View>
       <TouchableHighlight

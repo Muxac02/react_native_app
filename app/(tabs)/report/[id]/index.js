@@ -8,16 +8,23 @@ import {
   TouchableHighlight,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { useContext } from "react";
-import { ReportsContext } from "../../../_layout";
+import { useReports } from "@/contexts/ReportsContext";
 import ReportCardBlock from "../../../../components/ReportCardBlock";
 
 export default function Report() {
+  const { reports, loading, error } = useReports();
   const { id } = useLocalSearchParams();
-  const reports = useContext(ReportsContext);
   const data = reports.find((report) => report.number == id);
   return (
     <SafeAreaView style={styles.container}>
+      <Text
+        style={[
+          styles.topText,
+          { width: "100%", textAlign: "left", marginTop: 4, marginLeft: 16 },
+        ]}
+      >
+        {data.author ? `Автор: ${data.author}` : "Ошибка, нету автора"}
+      </Text>
       <View style={styles.topTextContainer}>
         <Text style={styles.topText}>
           {data.created_at

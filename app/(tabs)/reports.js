@@ -1,13 +1,18 @@
-import { StyleSheet, Text, SafeAreaView, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import ReportCardContent from "@/components/ReportCardContent";
-import { useContext } from "react";
-import { ReportsContext } from "../_layout";
+import { useReports } from "@/contexts/ReportsContext";
 
 export default function Reports() {
-  const reports = useContext(ReportsContext);
+  const { reports, loading, error } = useReports();
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
+        {loading && <ActivityIndicator />}
         {reports.map((report) => {
           return (
             <ReportCardContent
