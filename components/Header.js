@@ -9,7 +9,7 @@ import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 import RecordSearchDrawer from "./RecordSearchDrawer";
 import { usePathname } from "expo-router";
-import { Icon, ArrowLeftIcon, MenuIcon } from "@/components/ui/icon";
+import { Icon, ArrowLeftIcon, MenuIcon, AddIcon } from "@/components/ui/icon";
 
 export default function Header(props) {
   const router = useRouter();
@@ -21,7 +21,7 @@ export default function Header(props) {
       currentScreen == "favorite" ||
       currentScreen == "search" ? (
         <RecordSearchDrawer />
-      ) : currentScreen == "record" ? (
+      ) : currentScreen == "record" || currentScreen == "report" ? (
         <TouchableHighlight
           style={{ borderRadius: 24 }}
           underlayColor={"rgba(165, 165, 165, 0.4)"}
@@ -31,15 +31,15 @@ export default function Header(props) {
         >
           <Icon as={ArrowLeftIcon} style={styles.icon} />
         </TouchableHighlight>
-      ) : currentScreen != "profile" ? (
+      ) : currentScreen == "reports" ? (
         <TouchableHighlight
           style={{ borderRadius: 24 }}
           underlayColor={"rgba(165, 165, 165, 0.4)"}
           onPress={() => {
-            console.log(`'open overlay for screen "${currentScreen}"`);
+            router.push("/report/addReport");
           }}
         >
-          <Icon as={MenuIcon} style={styles.icon} />
+          <Icon as={AddIcon} style={styles.icon} />
         </TouchableHighlight>
       ) : (
         <View style={{ width: 48 }}></View>
