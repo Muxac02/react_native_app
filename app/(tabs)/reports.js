@@ -8,7 +8,7 @@ import ReportCardContent from "@/components/ReportCardContent";
 import { useReports } from "@/contexts/ReportsContext";
 
 export default function Reports() {
-  const { reports, loading, error } = useReports();
+  const { reports, loading, error, authors } = useReports();
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -16,7 +16,10 @@ export default function Reports() {
         {reports.map((report) => {
           return (
             <ReportCardContent
-              data={report}
+              data={{
+                ...report,
+                author: authors.find((aut) => aut.number == report.author).name,
+              }}
               key={`report_card_content${report.number}`}
             />
           );

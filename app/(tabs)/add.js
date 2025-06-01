@@ -131,15 +131,15 @@ export default function Add() {
             ship: ship,
             port: port,
             arrive_date: arriveDate.toLocaleString(),
-            sail_date: sailDatearriveDate.toLocaleString(),
+            sail_date: sailDate.toLocaleString(),
             arrive_date_real:
               realArriveDate.getTime() == 0
                 ? null
-                : realArriveDatearriveDate.toLocaleString(),
+                : realArriveDate.toLocaleString(),
             sail_date_real:
               realSailDate.getTime() == 0
                 ? null
-                : realSailDatearriveDate.toLocaleString(),
+                : realSailDate.toLocaleString(),
           });
           router.push("/");
         }}

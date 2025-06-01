@@ -12,9 +12,10 @@ import { useReports } from "@/contexts/ReportsContext";
 import ReportCardBlock from "../../../../components/ReportCardBlock";
 
 export default function Report() {
-  const { reports, loading, error } = useReports();
+  const { reports, loading, error, authors } = useReports();
   const { id } = useLocalSearchParams();
   const data = reports.find((report) => report.number == id);
+  const author = authors.find((author) => author.number == data.author).name;
   return (
     <SafeAreaView style={styles.container}>
       <Text
@@ -23,7 +24,7 @@ export default function Report() {
           { width: "100%", textAlign: "left", marginTop: 4, marginLeft: 16 },
         ]}
       >
-        {data.author ? `Автор: ${data.author}` : "Ошибка, нету автора"}
+        {author ? `Автор: ${author}` : "Ошибка, нету автора"}
       </Text>
       <View style={styles.topTextContainer}>
         <Text style={styles.topText}>
@@ -69,12 +70,11 @@ export default function Report() {
       <ScrollView>
         {data.content.map((block) => {
           return (
-            <View style={styles.block}>
-              <ReportCardBlock
-                data={block}
-                key={`reportScreen${data.number}BlockConent${block.number}`}
-                cardNumber={data.number}
-              />
+            <View
+              key={`reportScreen${data.number}BlockConent${block.number}`}
+              style={styles.block}
+            >
+              <ReportCardBlock data={block} cardNumber={data.number} />
             </View>
           );
         })}

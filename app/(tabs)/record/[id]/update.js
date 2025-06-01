@@ -187,6 +187,7 @@ export default function Update() {
                   ? null
                   : realSailDate.toLocaleString(),
               comment: comment ? comment : null,
+              updated_at: new Date().toLocaleString(),
             });
             router.push(`/record/${id}`);
           }}
