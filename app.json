@@ -20,7 +20,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.muxac.react_native_app"
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -28,6 +29,14 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "26b763d3-dafa-4fd6-a808-b564385bf136"
+      }
+    }
   }
 }

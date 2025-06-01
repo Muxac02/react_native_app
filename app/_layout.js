@@ -6,23 +6,26 @@ import { PaperProvider } from "react-native-paper";
 import { ReportsProvider } from "../contexts/ReportsContext";
 import { RecordsProvider } from "@/contexts/RecordsContext";
 import { SelectProvider } from "@/contexts/SelectContext";
+import { SearchRecordsProvider } from "@/contexts/SearchRecordsContext";
 
 export default function Root() {
   // Set up the auth context and render our layout inside of it.
 
   return (
-    <ReportsProvider>
-      <RecordsProvider>
-        <SelectProvider>
-          <GluestackUIProvider mode="light">
-            <HoldMenuProvider theme="light" paddingBottom={48}>
-              <PaperProvider>
-                <Slot />
-              </PaperProvider>
-            </HoldMenuProvider>
-          </GluestackUIProvider>
-        </SelectProvider>
-      </RecordsProvider>
-    </ReportsProvider>
+    <SearchRecordsProvider>
+      <ReportsProvider>
+        <RecordsProvider>
+          <SelectProvider>
+            <GluestackUIProvider mode="light">
+              <HoldMenuProvider theme="light" paddingBottom={48}>
+                <PaperProvider>
+                  <Slot />
+                </PaperProvider>
+              </HoldMenuProvider>
+            </GluestackUIProvider>
+          </SelectProvider>
+        </RecordsProvider>
+      </ReportsProvider>
+    </SearchRecordsProvider>
   );
 }

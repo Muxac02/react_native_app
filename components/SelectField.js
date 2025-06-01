@@ -20,6 +20,7 @@ export default function SelectField(props) {
       onValueChange={(val) => {
         props.setItem(val);
       }}
+      defaultValue={props.defaultItem ? props.defaultItem : null}
     >
       <SelectTrigger
         variant="underlined"

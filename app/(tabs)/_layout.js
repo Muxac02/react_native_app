@@ -120,6 +120,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="record/[id]/update"
+        options={{
+          title: "Редактироваь запись №",
+          href: null,
+          animation: "none",
+        }}
+      />
+      <Tabs.Screen
         name="report/addReport"
         options={{
           title: "Создание отчета",

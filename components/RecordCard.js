@@ -4,13 +4,16 @@ import {
   Image,
   StyleSheet,
   TouchableHighlight,
+  Alert,
 } from "react-native";
 import { useCountdown } from "../hooks/useCountDown";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons/";
 import { useRouter } from "expo-router";
 import { HoldItem } from "react-native-hold-menu";
+import { useSelect } from "@/contexts/SelectContext";
 
 export default function RecordCard(props) {
+  const { ships, ports } = useSelect();
   const router = useRouter();
   const data = props.data;
   const arrive_date = new Date(data.arrive_date);
@@ -206,27 +209,68 @@ export default function RecordCard(props) {
     : arriveButtonDisabled
     ? false
     : true;
+  const archived = data.sail_date_real
+    ? Math.abs(sail_date_real.getTime() - current_date) >=
+      7 * 24 * 60 * 60 * 1000
+    : false;
+
   return (
     <HoldItem
       items={[
         { text: "Действие", isTitle: true, onPress: () => {} },
         {
           text: "Пришел в порт",
+          isDestructive: arriveButtonDisabled,
           onPress: () => {
+            if (arriveButtonDisabled) {
+              Alert.alert(
+                "Внимание",
+                "Судно уже пришло",
+                [
+                  {
+                    text: "Ок",
+                  },
+                ],
+                { cancelable: true }
+              );
+              return;
+            }
             console.log(`arrive record ${data.number}`);
+            props.changeStatus(data.number);
           },
         },
         {
           text: "Ушел в рейс",
           withSeparator: true,
+          isDestructive: sailButtonDisabled,
           onPress: () => {
+            if (sailButtonDisabled) {
+              Alert.alert(
+                "Внимание",
+                arriveButtonDisabled ? "Судно уже ушло" : "Судно ещё не пришло",
+                [
+                  {
+                    text: "Ок",
+                  },
+                ],
+                { cancelable: true }
+              );
+              return;
+            }
             console.log(`sail record ${data.number}`);
+            props.changeStatus(data.number);
           },
         },
         {
           text: "Редактировать",
           onPress: () => {
             console.log(`change record ${data.number}`);
+            router.push({
+              pathname: "/record/[id]/update",
+              params: {
+                id: data.number,
+              },
+            });
           },
         },
       ]}
@@ -245,18 +289,35 @@ export default function RecordCard(props) {
           });
         }}
         key={data.number}
+        disabled={props.loading}
       >
         <View>
-          <View style={styles.head}>
+          <View style={[styles.head, { paddingBottom: archived ? 16 : 4 }]}>
             <View style={styles.headShip}>
               <FontAwesome6 name="ship" color={textColor} size={28} />
-              <Text style={styles.headText}>{data.ship}</Text>
+              <Text style={styles.headText}>
+                {ships.find((s) => s.number == data.ship).name}
+              </Text>
             </View>
             <View style={styles.headPort}>
               <FontAwesome name="anchor" color={textColor} size={28} />
-              <Text style={styles.headText}>{data.port}</Text>
+              <Text style={styles.headText}>
+                {ports.find((s) => s.number == data.port).name}
+              </Text>
             </View>
           </View>
+          {archived && (
+            <Text
+              style={{
+                color: textColor,
+                fontWeight: "bold",
+                position: "absolute",
+                top: 28,
+              }}
+            >
+              В архиве
+            </Text>
+          )}
           <View style={styles.contentFront}>
             <View style={styles.contentDate}>
               <Text style={styles.contentDateText}>До прибытия в порт</Text>

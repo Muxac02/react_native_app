@@ -9,8 +9,11 @@ import DateTimePicker from "@/components/DateTimePicker";
 import SelectField from "@/components/SelectField";
 import { useEffect, useState } from "react";
 import { useSelect } from "@/contexts/SelectContext";
+import { useRecords } from "@/contexts/RecordsContext";
+import { router } from "expo-router";
 
 export default function Add() {
+  const { addRecord } = useRecords();
   const { ships, ports } = useSelect();
   const [ship, setShip] = useState("");
   const [port, setPort] = useState("");
@@ -123,17 +126,22 @@ export default function Add() {
       </View>
       <TouchableHighlight
         onPress={() => {
-          console.log("add record", {
-            data: {
-              ship: ship,
-              port: port,
-              arriveDate: arriveDate.getTime() == 0 ? null : arriveDate,
-              sailDate: sailDate.getTime() == 0 ? null : sailDate,
-              realArriveDate:
-                realArriveDate.getTime() == 0 ? null : realArriveDate,
-              realSailDate: realSailDate.getTime() == 0 ? null : realSailDate,
-            },
+          console.log("add record");
+          addRecord({
+            ship: ship,
+            port: port,
+            arrive_date: arriveDate.toLocaleString(),
+            sail_date: sailDatearriveDate.toLocaleString(),
+            arrive_date_real:
+              realArriveDate.getTime() == 0
+                ? null
+                : realArriveDatearriveDate.toLocaleString(),
+            sail_date_real:
+              realSailDate.getTime() == 0
+                ? null
+                : realSailDatearriveDate.toLocaleString(),
           });
+          router.push("/");
         }}
         style={[
           styles.addButton,

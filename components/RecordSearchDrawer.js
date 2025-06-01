@@ -45,8 +45,10 @@ import { Switch } from "@/components/ui/switch";
 import { HStack } from "@/components/ui/hstack";
 import { Icon, SearchIcon } from "@/components/ui/icon";
 import { useSelect } from "@/contexts/SelectContext";
+import { useSearchRecords } from "@/contexts/SearchRecordsContext";
 
 export default function RecordSearchDrawer(props) {
+  const { fetchRecords } = useSearchRecords();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [ship, setShip] = useState("default");
@@ -55,14 +57,14 @@ export default function RecordSearchDrawer(props) {
   const [arriveDateInfo, setArriveDateInfo] = useState({
     start: new Date(),
     end: new Date(),
-    startChanged: false,
-    endChanged: false,
+    start_changed: false,
+    end_changed: false,
   });
   const [sailDateInfo, setSailDateInfo] = useState({
     start: new Date(),
     end: new Date(),
-    startChanged: false,
-    endChanged: false,
+    start_changed: false,
+    end_changed: false,
   });
   const [archived, setArchived] = useState(false);
   const handleDateInfoChanged = (event, selectedDate) => {
@@ -73,12 +75,12 @@ export default function RecordSearchDrawer(props) {
           ? setArriveDateInfo({
               ...arriveDateInfo,
               start: currentDate,
-              startChanged: true,
+              start_changed: true,
             })
           : setSailDateInfo({
               ...sailDateInfo,
               start: currentDate,
-              startChanged: true,
+              start_changed: true,
             });
       }
     } else if (event.pos === "end") {
@@ -87,12 +89,12 @@ export default function RecordSearchDrawer(props) {
           ? setArriveDateInfo({
               ...arriveDateInfo,
               end: currentDate,
-              endChanged: true,
+              end_changed: true,
             })
           : setSailDateInfo({
               ...sailDateInfo,
               end: currentDate,
-              endChanged: true,
+              end_changed: true,
             });
       }
     } else {
@@ -105,13 +107,13 @@ export default function RecordSearchDrawer(props) {
         setArriveDateInfo({
           ...arriveDateInfo,
           start: new Date(),
-          startChanged: false,
+          start_changed: false,
         });
       } else if (pos === "end") {
         setArriveDateInfo({
           ...arriveDateInfo,
           end: new Date(),
-          endChanged: false,
+          end_changed: false,
         });
       }
     } else if (dir === "sail") {
@@ -119,13 +121,13 @@ export default function RecordSearchDrawer(props) {
         setSailDateInfo({
           ...sailDateInfo,
           start: new Date(),
-          startChanged: false,
+          start_changed: false,
         });
       } else if (pos === "end") {
         setSailDateInfo({
           ...sailDateInfo,
           end: new Date(),
-          endChanged: false,
+          end_changed: false,
         });
       }
     }
@@ -134,14 +136,14 @@ export default function RecordSearchDrawer(props) {
         ? setArriveDateInfo({
             start: new Date(),
             end: new Date(),
-            startChanged: false,
-            endChanged: false,
+            start_changed: false,
+            end_changed: false,
           })
         : setSailDateInfo({
             start: new Date(),
             end: new Date(),
-            startChanged: false,
-            endChanged: false,
+            start_changed: false,
+            end_changed: false,
           });
     }
   };
@@ -281,7 +283,7 @@ export default function RecordSearchDrawer(props) {
                     <Text style={{ fontSize: 14, paddingLeft: 4 }}>Начало</Text>
                     <DateTimePicker
                       date={arriveDateInfo.start}
-                      changed={arriveDateInfo.startChanged}
+                      changed={arriveDateInfo.start_changed}
                       onChange={handleDateInfoChanged}
                       onClear={handleDateInfoClear}
                       dir={"arrive"}
@@ -292,7 +294,7 @@ export default function RecordSearchDrawer(props) {
                     <Text style={{ fontSize: 14, paddingLeft: 4 }}>Конец</Text>
                     <DateTimePicker
                       date={arriveDateInfo.end}
-                      changed={arriveDateInfo.endChanged}
+                      changed={arriveDateInfo.end_changed}
                       onChange={handleDateInfoChanged}
                       onClear={handleDateInfoClear}
                       dir={"arrive"}
@@ -327,7 +329,7 @@ export default function RecordSearchDrawer(props) {
                     <Text style={{ fontSize: 14, paddingLeft: 4 }}>Начало</Text>
                     <DateTimePicker
                       date={sailDateInfo.start}
-                      changed={sailDateInfo.startChanged}
+                      changed={sailDateInfo.start_changed}
                       onChange={handleDateInfoChanged}
                       onClear={handleDateInfoClear}
                       dir={"sail"}
@@ -338,7 +340,7 @@ export default function RecordSearchDrawer(props) {
                     <Text style={{ fontSize: 14, paddingLeft: 4 }}>Конец</Text>
                     <DateTimePicker
                       date={sailDateInfo.end}
-                      changed={sailDateInfo.endChanged}
+                      changed={sailDateInfo.end_changed}
                       onChange={handleDateInfoChanged}
                       onClear={handleDateInfoClear}
                       dir={"sail"}
@@ -373,15 +375,19 @@ export default function RecordSearchDrawer(props) {
             <Button
               onPress={() => {
                 const data = {
-                  ship: ship,
-                  port: port,
-                  arriveDateInfo: JSON.stringify(arriveDateInfo),
-                  sailDateInfo: JSON.stringify(sailDateInfo),
+                  arrive_date_info: arriveDateInfo,
+                  sail_date_info: sailDateInfo,
                   archived: archived,
                 };
+                if (ship !== "default") {
+                  data.ship = ship;
+                }
+                if (port !== "default") {
+                  data.port = port;
+                }
+                fetchRecords(data);
                 router.push({
                   pathname: "/search",
-                  params: data,
                 });
                 setOpen(false);
               }}

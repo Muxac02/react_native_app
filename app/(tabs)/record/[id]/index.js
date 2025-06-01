@@ -10,11 +10,18 @@ import {
 import TextField from "@/components/TextField";
 import { useLocalSearchParams } from "expo-router";
 import { useRecords } from "@/contexts/RecordsContext";
+import { useSelect } from "@/contexts/SelectContext";
+import { useEffect, useState } from "react";
+import { router } from "expo-router";
 
 export default function Record() {
   const { id } = useLocalSearchParams();
-  const { records, loading, error } = useRecords();
+  const { records, loading, error, changeStatus } = useRecords();
+  const { ships, ports } = useSelect();
   const data = records.find((record) => record.number == id);
+  if (!data) return <ActivityIndicator />;
+  const ship = ships.find((s) => s.number == data.ship).name;
+  const port = ports.find((s) => s.number == data.port).name;
   const arriveButtonDisabled = data.arrive_date_real ? true : false;
   const sailButtonDisabled = data.sail_date_real
     ? true
@@ -56,10 +63,10 @@ export default function Record() {
         </View>
         <View style={{ flex: 1, paddingLeft: 12 }}>
           <Text style={[styles.topTextField, { marginBottom: 4 }]}>
-            {data.ship ? data.ship : "Ошибка"}
+            {ship ? ship : "Ошибка"}
           </Text>
           <Text style={[styles.topTextField, { marginTop: 4 }]}>
-            {data.port ? `Порт: ${data.port}` : "Ошибка"}
+            {port ? `Порт: ${port}` : "Ошибка"}
           </Text>
         </View>
       </View>
@@ -90,6 +97,7 @@ export default function Record() {
           underlayColor={"rgb(108, 172, 228)"}
           onPress={() => {
             console.log("1 pressed");
+            changeStatus(data.number);
           }}
           style={[
             styles.button,
@@ -110,6 +118,7 @@ export default function Record() {
           underlayColor={"rgb(108, 172, 228)"}
           onPress={() => {
             console.log("2 pressed");
+            changeStatus(data.number);
           }}
           style={[
             styles.button,
@@ -129,6 +138,12 @@ export default function Record() {
           underlayColor={"rgb(108, 172, 228)"}
           onPress={() => {
             console.log("3 pressed");
+            router.push({
+              pathname: "/record/[id]/update",
+              params: {
+                id: data.number,
+              },
+            });
           }}
           style={[
             styles.button,
