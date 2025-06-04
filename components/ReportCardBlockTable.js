@@ -2,8 +2,10 @@ import React from "react";
 import { ScrollView, View, Text, StyleSheet } from "react-native";
 import { DataTable } from "react-native-paper";
 import { usePathname } from "expo-router";
+import { useSelect } from "@/contexts/SelectContext";
 
 export default function ReportCardBlockTable(props) {
+  const { ships, ports } = useSelect();
   const data = props.data;
   const currentScreen = usePathname().split("/")[2];
   const CP_StatisticCell = (total, inTime, late) => {
@@ -66,7 +68,7 @@ export default function ReportCardBlockTable(props) {
             textAlignVertical: "center",
           }}
         >
-          {(inTime / total) * 100}%
+          {total ? (inTime / total) * 100 : 0}%
         </Text>
       </View>
     );
@@ -165,7 +167,13 @@ export default function ReportCardBlockTable(props) {
               }screen${currentScreen}`}
             >
               <View style={[styles.dataCell, { flex: 2 }]}>
-                <Text style={styles.dataText}>{item.ship}</Text>
+                <Text style={styles.dataText}>
+                  {
+                    ships.find((s) => {
+                      return s.number == item.ship;
+                    }).name
+                  }
+                </Text>
               </View>
               {/* Отставание: Прибытие */}
               <View style={styles.dataTimeCell}>
@@ -268,7 +276,13 @@ export default function ReportCardBlockTable(props) {
               }screen${currentScreen}`}
             >
               <View style={[styles.dataCell, { flex: 2 }]}>
-                <Text style={styles.dataText}>{item.ship}</Text>
+                <Text style={styles.dataText}>
+                  {
+                    ships.find((s) => {
+                      return s.number == item.ship;
+                    }).name
+                  }
+                </Text>
               </View>
               {/* Запланированное */}
               <View style={styles.dataTimeCell}>
@@ -349,13 +363,20 @@ export default function ReportCardBlockTable(props) {
                       ? props.cardNumber
                       : "inReportCreationScreen"
                   }screen${currentScreen}`}
-                  style={{ paddingHorizontal: 0, borderBottomWidth: 0 }}
+                  style={{
+                    paddingHorizontal: 0,
+                    borderBottomWidth: 0,
+                  }}
                 >
                   <DataTable.Cell
                     textStyle={styles.cellText}
                     style={styles.ship}
                   >
-                    {item.ship}
+                    {
+                      ships.find((s) => {
+                        return s.number == item.ship;
+                      }).name
+                    }
                   </DataTable.Cell>
                   <DataTable.Cell
                     textStyle={styles.cellText}
@@ -376,14 +397,18 @@ export default function ReportCardBlockTable(props) {
                     style={styles.dateReal}
                     numeric
                   >
-                    {new Date(item.arrive_date_real).toLocaleString()}
+                    {item.arrive_date_real
+                      ? new Date(item.arrive_date_real).toLocaleString()
+                      : ""}
                   </DataTable.Cell>
                   <DataTable.Cell
                     textStyle={styles.cellText}
                     style={styles.dateReal}
                     numeric
                   >
-                    {new Date(item.sail_date_real).toLocaleString()}
+                    {item.sail_date_real
+                      ? new Date(item.sail_date_real).toLocaleString()
+                      : ""}
                   </DataTable.Cell>
                   <DataTable.Cell
                     textStyle={styles.cellText}
@@ -401,7 +426,7 @@ export default function ReportCardBlockTable(props) {
                     textStyle={styles.cellText}
                     style={styles.port}
                   >
-                    {item.port}
+                    {ports.find((s) => s.number == item.port).name}
                   </DataTable.Cell>
                 </DataTable.Row>
               ))}
@@ -446,7 +471,11 @@ export default function ReportCardBlockTable(props) {
                     textStyle={styles.cellText}
                     style={styles.ship}
                   >
-                    {item.ship}
+                    {
+                      ships.find((s) => {
+                        return s.number == item.ship;
+                      }).name
+                    }
                   </DataTable.Cell>
                   <DataTable.Cell>
                     {CP_StatisticCell(

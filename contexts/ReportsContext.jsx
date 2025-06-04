@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { API_URL } from "@/utils/apiurl";
 
 const ReportsContext = createContext();
 
@@ -10,7 +11,7 @@ export const ReportsProvider = ({ children }) => {
 
   const fetchAuthors = async () => {
     try {
-      const response = await fetch("http://192.168.0.14:8000/users/authors"); // твой метод API
+      const response = await fetch(`${API_URL}/users/authors`); // твой метод API
       if (!response.ok) {
         throw new Error("Failed to fetch authors:", response.status);
       }
@@ -25,7 +26,7 @@ export const ReportsProvider = ({ children }) => {
   const fetchReports = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://192.168.0.14:8000/reports"); // твой метод API
+      const response = await fetch(`${API_URL}/reports`); // твой метод API
       if (!response.ok) {
         throw new Error("Failed to fetch reports:", response.status);
       }
@@ -57,6 +58,32 @@ export const ReportsProvider = ({ children }) => {
   //       setLoading(false);
   //     }
   //   };
+  const addReport = async (body) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_URL}/reports/`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Failed to create report ${id} status:`,
+          response.status
+        );
+      }
+      // После успешного обновления перезагружаем данные
+      await fetchReports();
+      console.log(await response.json());
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ReportsContext.Provider
@@ -67,6 +94,7 @@ export const ReportsProvider = ({ children }) => {
         authors,
         //updateReport,
         refreshReports: fetchReports,
+        addReport,
       }}
     >
       {children}

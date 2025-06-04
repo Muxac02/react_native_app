@@ -8,8 +8,10 @@ import {
   ChartColumnStacked,
 } from "lucide-react-native";
 import ReportCardBlockTable from "./ReportCardBlockTable";
+import { useSelect } from "@/contexts/SelectContext";
 
 export default function ReportCardBlock(props) {
+  const { ships } = useSelect();
   const currentScreen = usePathname().split("/")[1];
   const data = props.data;
   const loading = props.loading == undefined ? false : props.loading;
@@ -68,7 +70,7 @@ export default function ReportCardBlock(props) {
                   }`}
                   style={[{ marginLeft: 6 }, styles.blockShips]}
                 >
-                  {`\u2022 ${ship}`}
+                  {`\u2022 ${ships.find((s) => s.number == ship).name}`}
                 </Text>
               );
             })}
@@ -76,14 +78,20 @@ export default function ReportCardBlock(props) {
         ) : (
           <View>
             <Text style={styles.blockShips}>Судно:</Text>
-            <Text style={styles.blockShips}>{data.ships[0]}</Text>
+            <Text style={styles.blockShips}>
+              {ships.find((s) => s.number == data.ships[0]).name}
+            </Text>
           </View>
         )
       ) : null}
       <Text style={styles.blockDates}>
-        {new Date(data.dateFrom).toLocaleDateString()}
+        {new Date(data.dateFrom).getTime() == 0
+          ? "Без ограничения"
+          : new Date(data.dateFrom).toLocaleDateString()}
         {" --- "}
-        {new Date(data.dateTo).toLocaleDateString()}
+        {new Date(data.dateTo).getTime() == 0
+          ? "Без ограничения"
+          : new Date(data.dateTo).toLocaleDateString()}
       </Text>
       {currentScreen == "report" ? (
         loading ? (
@@ -96,22 +104,29 @@ export default function ReportCardBlock(props) {
               borderColor: "rgba(127, 127, 127, 0.4)",
               width: "100%",
               height:
-                data.content.length > 1
-                  ? data.name == "travel"
-                    ? 136
+                data.content.length > 0
+                  ? data.name == "records"
+                    ? 50 + data.content.length * 20
+                    : data.name == "points"
+                    ? 50 + data.content.length * 20
+                    : data.name == "travel"
+                    ? 90 + data.content.length * 20
                     : data.name == "port"
-                    ? 109
-                    : 134
-                  : 90,
+                    ? 60 + data.content.length * 20
+                    : 120
+                  : 25,
             }}
           >
-            {data.type == "table" ? (
+            {data.content.length && data.type == "table" ? (
               <ReportCardBlockTable
                 data={data}
                 blockNumber={data.number}
                 cardNumber={props.cardNumber}
               />
             ) : null}
+            {data.content.length <= 0 && (
+              <Text>Информация о записях отсутствует</Text>
+            )}
           </View>
         )
       ) : null}

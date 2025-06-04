@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import { API_URL } from "@/utils/apiurl";
 
 const SelectContext = createContext();
 
@@ -52,7 +53,6 @@ export const SelectProvider = ({ children }) => {
       number: 12,
       name: 'к-в "Россита"',
     },
-    ,
   ];
   const ports = [
     {

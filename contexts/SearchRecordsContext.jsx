@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { API_URL } from "@/utils/apiurl";
 
 const SearchRecordsContext = createContext();
 
@@ -10,7 +11,7 @@ export const SearchRecordsProvider = ({ children }) => {
   const fetchRecords = async (body) => {
     try {
       setLoading(true);
-      const response = await fetch("http://192.168.0.14:8000/records/search", {
+      const response = await fetch(`${API_URL}/records/search`, {
         method: "POST",
         headers: {
           Accept: "application/json",

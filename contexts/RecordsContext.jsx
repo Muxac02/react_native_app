@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { API_URL } from "@/utils/apiurl";
 
 const RecordsContext = createContext();
 
@@ -10,7 +11,7 @@ export const RecordsProvider = ({ children }) => {
   const fetchRecords = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://192.168.0.14:8000/records"); // твой метод API
+      const response = await fetch(`${API_URL}/records`); // твой метод API
       if (!response.ok) {
         throw new Error("Failed to fetch records:", response.status);
       }
@@ -32,7 +33,7 @@ export const RecordsProvider = ({ children }) => {
   const updateRecord = async (id, changes) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://192.168.0.14:8000/records/${id}`, {
+      const response = await fetch(`${API_URL}/records/${id}`, {
         method: "PATCH",
         headers: {
           Accept: "application/json",
@@ -51,10 +52,9 @@ export const RecordsProvider = ({ children }) => {
   const changeStatus = async (id) => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `http://192.168.0.14:8000/records/status_change/${id}`,
-        { method: "POST" }
-      ); // твой метод API
+      const response = await fetch(`${API_URL}/records/status_change/${id}`, {
+        method: "POST",
+      }); // твой метод API
       if (!response.ok) {
         throw new Error(
           `Failed to change record ${id} status:`,
@@ -74,7 +74,7 @@ export const RecordsProvider = ({ children }) => {
   const addRecord = async (body) => {
     try {
       setLoading(true);
-      const response = await fetch("http://192.168.0.14:8000/records/", {
+      const response = await fetch(`${API_URL}/records/`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -101,7 +101,7 @@ export const RecordsProvider = ({ children }) => {
   const deleteRecord = async (id) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://192.168.0.14:8000/records/${id}`, {
+      const response = await fetch(`${API_URL}/records/${id}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",

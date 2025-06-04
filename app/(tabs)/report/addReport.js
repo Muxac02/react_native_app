@@ -10,18 +10,22 @@ import {
   Modal,
   Pressable,
 } from "react-native";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import ReportCardBlock from "@/components/ReportCardBlock";
 import DateTimePicker from "@/components/DateTimePicker";
 import SelectField from "@/components/SelectField";
 import { Icon, CloseCircleIcon } from "@/components/ui/icon";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useSelect } from "@/contexts/SelectContext";
+import { API_URL } from "@/utils/apiurl";
+import { useReports } from "@/contexts/ReportsContext";
+import { router } from "expo-router";
 
 export default function AddReport() {
+  const { addReport } = useReports();
   const { ships } = useSelect();
   const [data, setData] = useState([]);
-  const [shouldUpdate, setShouldUpdate] = useState(0);
+  const [shouldUpdate, setShouldUpdate] = useState([]);
   const [name, setName] = useState("records");
   const [startDate, setStartDate] = useState(new Date(0));
   const [finishDate, setFinishDate] = useState(new Date(0));
@@ -35,45 +39,77 @@ export default function AddReport() {
     { number: 4, name: "port" },
   ];
 
-  const dataRef = useRef(data);
-  dataRef.current = data;
   const handleOptionSelect = (name) => {
     setName(name);
     setModalVisible(false);
     setInfoModalVisible(true);
   };
   const handleBlockAdded = (number) => {
-    let newData = data;
+    let newData = [...data];
     newData.push({
       number: number,
       type: "table",
       name: name,
-      isGroup: shipsSelected.length == 1,
+      isGroup: shipsSelected.length == 1 ? false : true,
       ships: shipsSelected,
-      dateFrom: startDate.toDateString(),
-      dateTo: finishDate.toDateString(),
+      dateFrom: startDate,
+      dateTo: finishDate,
+      loading: true,
       content: [],
     });
+    setShouldUpdate([...shouldUpdate, number]);
     setData(newData);
     setShipsSelected([]);
-    // const int = setTimeout(() => {
-    //   let newData = data;
-    //   newData.find((item) => item.number == number).content = [
-    //     {
-    //       number: 1,
-    //       ship: 'СУАЛ "Сибирь"',
-    //       port: "МУР",
-    //       arrive_date: "2025-03-01T10:00:00.000000",
-    //       sail_date: "2025-03-01T10:00:00.000000",
-    //       arrive_date_real: "2025-03-01T10:00:00.000000",
-    //       sail_date_real: "2025-03-01T10:00:00.000000",
-    //       comment:
-    //         "График от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025\nГрафик от 14.02.2025",
-    //     },
-    //   ];
-    //   setData(newData);
-    // }, 3000);
   };
+
+  useEffect(() => {
+    async function fetch_content_for_block(updateNumber) {
+      try {
+        const body = data.find((block) => block.number == updateNumber);
+        const response = await fetch(`${API_URL}/reports/create_block`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: body.name,
+            ships: body.ships,
+            dateFrom: body.dateFrom,
+            dateTo: body.dateTo,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch records:", response.status);
+        }
+        const content = await response.json();
+        //console.log(content);
+        let newData = [...data];
+        newData.forEach((block) => {
+          if (block.number == updateNumber) {
+            block.loading = false;
+            block.content = content;
+          }
+        });
+        setData(newData);
+        let newShouldUpdate = [
+          ...shouldUpdate.filter((v) => v != updateNumber),
+        ];
+        setShouldUpdate(newShouldUpdate);
+        return true;
+      } catch (err) {
+        console.log(err.message);
+        return false;
+      }
+    }
+    //console.log("data changed, fetch data for data.number: ", shouldUpdate);
+    if (shouldUpdate.length != 0) {
+      shouldUpdate.forEach((numb) => {
+        fetch_content_for_block(numb);
+      });
+    }
+  }, [shouldUpdate]);
+
   const blockNames = (name) => {
     switch (name) {
       case "records":
@@ -93,12 +129,11 @@ export default function AddReport() {
       <ScrollView>
         {data.map((block) => {
           return (
-            <View style={styles.block}>
-              <ReportCardBlock
-                data={block}
-                key={`reportCreationScreenBlockConent${block.number}`}
-                loading={block.content.length != 0 ? false : true}
-              />
+            <View
+              style={styles.block}
+              key={`reportCreationScreenBlockConent${block.number}`}
+            >
+              <ReportCardBlock data={block} loading={block.loading} />
             </View>
           );
         })}
@@ -106,20 +141,51 @@ export default function AddReport() {
           onPress={() => {
             setModalVisible(true);
           }}
-          underlayColor={"#6CACE4"}
+          underlayColor={"#f0f0f0"}
           style={[
             styles.button,
-            { backgroundColor: shouldUpdate == 0 ? "#025EA1" : "#f0f0f0" },
+            {
+              backgroundColor: "#6CACE4",
+            },
           ]}
-          disabled={shouldUpdate != 0}
+          // disabled={shouldUpdate.length != 0}
+        >
+          <Text style={[styles.buttonText, { color: "#fff" }]}>+</Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          onPress={() => {
+            addReport({
+              author: 1,
+              created_at: new Date().toLocaleString(),
+              content: data,
+            });
+            router.push("/reports");
+            setData([]);
+          }}
+          underlayColor={"#6CACE4"}
+          style={[
+            styles.createButton,
+            {
+              backgroundColor:
+                shouldUpdate.length != 0 || data.length == 0
+                  ? "#aaa"
+                  : "#025EA1",
+            },
+          ]}
+          disabled={shouldUpdate.length != 0 || data.length == 0}
         >
           <Text
             style={[
               styles.buttonText,
-              { color: shouldUpdate == 0 ? "#fff" : "#000" },
+              {
+                color:
+                  shouldUpdate.length != 0 || data.length == 0
+                    ? "#666"
+                    : "#fff",
+              },
             ]}
           >
-            +
+            Создать отчет
           </Text>
         </TouchableHighlight>
         <Modal
@@ -189,6 +255,9 @@ export default function AddReport() {
                       unFillColor="#FFFFFF"
                       text={ship.name}
                       key={`checkBox${ship.number}`}
+                      isChecked={
+                        shipsSelected.findIndex((s) => s == ship.number) != -1
+                      }
                       textStyle={{
                         textDecorationLine:
                           shipsSelected.findIndex((s) => s == ship.number) != -1
@@ -214,22 +283,14 @@ export default function AddReport() {
                   styles.cancelButton,
                   {
                     backgroundColor:
-                      startDate.getTime() == 0 ||
-                      finishDate.getTime() == 0 ||
-                      shipsSelected.length == 0
-                        ? "#f0f0f0"
-                        : "rgb(0, 50, 116)",
+                      shipsSelected.length == 0 ? "#f0f0f0" : "rgb(0, 50, 116)",
                   },
                 ]}
                 onPress={() => {
                   handleBlockAdded(data.length + 1);
                   setInfoModalVisible(false);
                 }}
-                disabled={
-                  startDate.getTime() == 0 ||
-                  finishDate.getTime() == 0 ||
-                  shipsSelected.length == 0
-                }
+                disabled={shipsSelected.length == 0}
               >
                 <Text style={styles.cancelText}>Подтвердить</Text>
               </TouchableOpacity>
@@ -252,6 +313,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginHorizontal: 4,
     width: 64,
+    height: 48,
+    alignSelf: "center",
+    marginTop: 12,
+  },
+  createButton: {
+    backgroundColor: "#025EA1",
+    padding: 8,
+    borderRadius: 12,
+    marginHorizontal: 4,
     height: 48,
     alignSelf: "center",
     marginTop: 12,
