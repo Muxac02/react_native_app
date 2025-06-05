@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableHighlight,
   TouchableOpacity,
+  ActivityIndicator,
   Modal,
   Alert,
 } from "react-native";
@@ -17,12 +18,15 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useSelect } from "@/contexts/SelectContext";
 import { API_URL } from "@/utils/apiurl";
 import { useReports } from "@/contexts/ReportsContext";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
-export default function AddReport() {
-  const { addReport } = useReports();
+export default function UpdateReport() {
+  const { id } = useLocalSearchParams();
+  const { reports, changeReport, deleteReport } = useReports();
+  let prevData = reports.find((report) => report.number == id);
+  if (!prevData) return <ActivityIndicator />;
   const { ships } = useSelect();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(prevData.content);
   const [shouldUpdate, setShouldUpdate] = useState([]);
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState(new Date(0));
@@ -46,6 +50,11 @@ export default function AddReport() {
     setName("");
     setChangingBlock(0);
   };
+  useEffect(() => {
+    if (prevData) {
+      setData(prevData.content);
+    }
+  }, [id, prevData]);
   const handleOptionSelect = (name) => {
     setName(name);
     setModalVisible(false);
@@ -244,13 +253,16 @@ export default function AddReport() {
         </TouchableHighlight>
         <TouchableHighlight
           onPress={() => {
-            addReport({
-              author: 1,
-              created_at: new Date().toLocaleString(),
+            changeReport(prevData.number, {
+              author: prevData.author,
+              created_at: prevData.created_at,
+              updated_at: new Date().toLocaleString(),
               content: data,
             });
             router.push("/reports");
             setData([]);
+            clearSelectedInfo();
+            prevData = null;
           }}
           underlayColor={"#6CACE4"}
           style={[
@@ -275,8 +287,44 @@ export default function AddReport() {
               },
             ]}
           >
-            Создать отчет
+            Сохранить изменения
           </Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          onPress={() => {
+            Alert.alert(
+              "Внимание",
+              "Вы действительно хотите удалить отчет?",
+              [
+                {
+                  text: "Отмена",
+                  onPress: () => {},
+                  style: "cancel",
+                },
+                {
+                  text: "Да",
+                  onPress: () => {
+                    deleteReport(id);
+                    router.push(`/reports`);
+                    setData([]);
+                    clearSelectedInfo();
+                    prevData = null;
+                  },
+                },
+              ],
+              { cancelable: true }
+            );
+          }}
+          style={[
+            styles.createButton,
+            {
+              backgroundColor: "rgb(182, 0, 0)",
+              marginBottom: 12,
+            },
+          ]}
+          underlayColor={"rgb(112, 0, 0)"}
+        >
+          <Text style={[styles.buttonText]}>Удалить</Text>
         </TouchableHighlight>
         <Modal
           visible={modalVisible}

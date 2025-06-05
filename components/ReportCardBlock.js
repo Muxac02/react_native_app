@@ -142,7 +142,11 @@ const styles = StyleSheet.create({
     padding: 2,
     marginTop: 4,
   },
-  head: { flexDirection: "row" },
+  head: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "85%",
+  },
   blockName: {
     fontSize: 16,
   },

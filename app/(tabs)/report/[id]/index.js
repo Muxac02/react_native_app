@@ -8,7 +8,7 @@ import {
   TouchableHighlight,
   Alert,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useReports } from "@/contexts/ReportsContext";
 import ReportCardBlock from "../../../../components/ReportCardBlock";
 import generateExcelFile from "@/utils/ExcelGeneration";
@@ -17,6 +17,13 @@ export default function Report() {
   const { reports, loading, error, authors } = useReports();
   const { id } = useLocalSearchParams();
   const data = reports.find((report) => report.number == id);
+  if (data == undefined) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.errorText}>Ошибка, нету такого отчета</Text>
+      </SafeAreaView>
+    );
+  }
   const author = authors.find((author) => author.number == data.author).name;
   const handleExport = async () => {
     try {
@@ -70,6 +77,7 @@ export default function Report() {
         <TouchableHighlight
           onPress={() => {
             console.log("2 pressed");
+            router.push(`/report/${id}/update`);
           }}
           style={styles.button}
           underlayColor="#6CACE4"

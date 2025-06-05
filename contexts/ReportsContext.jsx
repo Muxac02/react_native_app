@@ -85,6 +85,59 @@ export const ReportsProvider = ({ children }) => {
     }
   };
 
+  const changeReport = async (id, body) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_URL}/reports/${id}`, {
+        method: "PATCH",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Failed to update report ${id} status:`,
+          response.status
+        );
+      }
+      // После успешного обновления перезагружаем данные
+      await fetchReports();
+      console.log(await response.json());
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteReport = async (id) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_URL}/reports/${id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Failed to delete report ${id} status:`,
+          response.status
+        );
+      }
+      // После успешного обновления перезагружаем данные
+      await fetchReports();
+      console.log(await response.json());
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <ReportsContext.Provider
       value={{
@@ -95,6 +148,8 @@ export const ReportsProvider = ({ children }) => {
         //updateReport,
         refreshReports: fetchReports,
         addReport,
+        changeReport,
+        deleteReport,
       }}
     >
       {children}

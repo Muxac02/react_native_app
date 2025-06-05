@@ -217,21 +217,26 @@ export default function Update() {
         </TouchableHighlight>
         <TouchableHighlight
           onPress={() => {
-            Alert.alert("Внимание", "Вы действительно хотите удалить запись?", [
-              {
-                text: "Cancel",
-                onPress: () => {},
-                style: "cancel",
-              },
-              {
-                text: "OK",
-                onPress: () => {
-                  deleteRecord(id);
-                  router.push(`/`);
-                  prevData = null;
+            Alert.alert(
+              "Внимание",
+              "Вы действительно хотите удалить запись?",
+              [
+                {
+                  text: "Отмена",
+                  onPress: () => {},
+                  style: "cancel",
                 },
-              },
-            ]);
+                {
+                  text: "Да",
+                  onPress: () => {
+                    deleteRecord(id);
+                    router.push(`/`);
+                    prevData = null;
+                  },
+                },
+              ],
+              { cancelable: true }
+            );
           }}
           style={[
             styles.addButton,
@@ -241,18 +246,7 @@ export default function Update() {
           ]}
           underlayColor={"rgb(112, 0, 0)"}
         >
-          <Text
-            style={[
-              styles.buttonText,
-              {
-                color: isFormValid
-                  ? buttonTextColors.active
-                  : buttonTextColors.inactive,
-              },
-            ]}
-          >
-            Удалить
-          </Text>
+          <Text style={[styles.buttonText]}>Удалить</Text>
         </TouchableHighlight>
       </ScrollView>
     </SafeAreaView>
