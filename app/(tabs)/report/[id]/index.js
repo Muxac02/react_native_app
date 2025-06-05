@@ -3,19 +3,38 @@ import {
   Text,
   SafeAreaView,
   View,
-  Image,
+  ActivityIndicator,
   ScrollView,
   TouchableHighlight,
+  Alert,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useReports } from "@/contexts/ReportsContext";
 import ReportCardBlock from "../../../../components/ReportCardBlock";
+import generateExcelFile from "@/utils/ExcelGeneration";
 
 export default function Report() {
   const { reports, loading, error, authors } = useReports();
   const { id } = useLocalSearchParams();
   const data = reports.find((report) => report.number == id);
   const author = authors.find((author) => author.number == data.author).name;
+  const handleExport = async () => {
+    try {
+      const result = await generateExcelFile(data.content, id);
+      if (!result.success) {
+        Alert.alert("Ошибка", "Не удалось создать файл");
+      }
+    } catch (error) {
+      Alert.alert("Ошибка", error.message);
+    }
+  };
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
       <Text
@@ -41,12 +60,12 @@ export default function Report() {
       <View style={styles.buttonGroup}>
         <TouchableHighlight
           onPress={() => {
-            console.log("1 pressed");
+            handleExport();
           }}
           style={styles.button}
           underlayColor="#6CACE4"
         >
-          <Text style={styles.buttonText}>Сохранить</Text>
+          <Text style={styles.buttonText}>Поделится\{"\n"}сохранить</Text>
         </TouchableHighlight>
         <TouchableHighlight
           onPress={() => {
@@ -56,15 +75,6 @@ export default function Report() {
           underlayColor="#6CACE4"
         >
           <Text style={styles.buttonText}>Изменить</Text>
-        </TouchableHighlight>
-        <TouchableHighlight
-          onPress={() => {
-            console.log("3 pressed");
-          }}
-          style={styles.button}
-          underlayColor="#6CACE4"
-        >
-          <Text style={styles.buttonText}>Отправить</Text>
         </TouchableHighlight>
       </View>
       <ScrollView>
@@ -115,6 +125,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 16,
+    textAlign: "center",
   },
   block: {
     backgroundColor: "#fff",

@@ -30,10 +30,12 @@
     "expo": "~52.0.46",
     "expo-blur": "^14.1.4",
     "expo-constants": "~17.0.8",
+    "expo-file-system": "~18.0.12",
     "expo-haptics": "^14.1.4",
     "expo-linking": "~7.0.5",
     "expo-navigation-bar": "~4.0.9",
     "expo-router": "~4.0.20",
+    "expo-sharing": "~13.0.1",
     "expo-splash-screen": "~0.29.24",
     "expo-status-bar": "~2.0.1",
     "lucide-react-native": "^0.510.0",
@@ -53,7 +55,8 @@
     "react-native-svg": "^15.2.0",
     "react-native-unimodules": "^0.15.0",
     "react-native-web": "~0.19.13",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
