@@ -57,7 +57,7 @@ export default function Record() {
           }}
         >
           <Image
-            source={require("../../../../assets/ships/sibir1.png")}
+            source={require("@/assets/ships/sibir1.png")}
             style={{ width: "100%", height: undefined, aspectRatio: 152 / 100 }}
           />
         </View>

@@ -1,13 +1,35 @@
 import { Tabs } from "expo-router";
+import { Stack } from "expo-router/stack";
 import { Ionicons, MaterialIcons, Fontisto } from "@expo/vector-icons";
 import { View } from "react-native";
-import * as NavigationBar from "expo-navigation-bar";
-import Header from "../../components/Header";
+import Header from "@/components/Header";
+import { useAuth } from "@/contexts/AuthContext";
+import { Redirect } from "expo-router";
 
 export default function TabLayout() {
-  NavigationBar.setBackgroundColorAsync("#025EA1");
+  const { authenticated, user } = useAuth();
+  if (!authenticated) {
+    return <Redirect href="/sign-in" />;
+  }
+  const getPermissionByName = (name) => {
+    switch (user.role) {
+      case "admin":
+        if (name == "admin") return name;
+        break;
+      case "department_worker":
+        if (["reports", "report/addReport"].includes(name)) return name;
+        break;
+      case "dispatcher":
+        if (["admin", "report/addReport"].includes(name)) return null;
+        return name;
+      default:
+        return null;
+    }
+    return null;
+  };
   return (
     <Tabs
+      backBehavior="history"
       screenOptions={{
         header: (props) => (
           <Header title={props.options.title} params={props.route.params} />
@@ -34,6 +56,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          href: getPermissionByName(""),
           title: "График",
           tabBarIcon: ({ color, focused }) =>
             focused ? (
@@ -48,6 +71,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="favorite"
         options={{
+          href: getPermissionByName("favorite"),
           title: "Избранное",
           tabBarIcon: ({ color, focused }) =>
             focused ? (
@@ -62,6 +86,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="add"
         options={{
+          href: getPermissionByName("add"),
           title: "Добавить",
           tabBarIcon: ({ color, focused }) =>
             focused ? (
@@ -77,6 +102,7 @@ export default function TabLayout() {
         name="reports"
         options={{
           title: "Отчеты",
+          href: getPermissionByName("reports"),
           tabBarIcon: ({ color, focused }) =>
             focused ? (
               <View style={activeIconStyle}>
@@ -138,9 +164,41 @@ export default function TabLayout() {
       <Tabs.Screen
         name="report/addReport"
         options={{
+          href: getPermissionByName("report/addReport"),
           title: "Создание отчета",
-          href: null,
           animation: "none",
+          tabBarIcon: ({ color, focused }) =>
+            focused ? (
+              <View style={activeIconStyle}>
+                <MaterialIcons name="add" color={color} size={28} />
+              </View>
+            ) : (
+              <MaterialIcons name="add" color={color} size={28} />
+            ),
+        }}
+      />
+      <Tabs.Screen
+        name="admin"
+        options={{
+          href: getPermissionByName("admin"),
+          title: "Администрирование",
+          animation: "none",
+          tabBarIcon: ({ color, focused }) =>
+            focused ? (
+              <View style={activeIconStyle}>
+                <MaterialIcons
+                  name="admin-panel-settings"
+                  color={color}
+                  size={28}
+                />
+              </View>
+            ) : (
+              <MaterialIcons
+                name="admin-panel-settings"
+                color={color}
+                size={28}
+              />
+            ),
         }}
       />
     </Tabs>

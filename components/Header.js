@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableHighlight,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 import RecordSearchDrawer from "./RecordSearchDrawer";
 import { usePathname } from "expo-router";
@@ -16,7 +15,6 @@ export default function Header(props) {
   const currentScreen = usePathname().split("/")[1];
   return (
     <View style={styles.container}>
-      <StatusBar style="light" backgroundColor="#025EA1" translucent={false} />
       {currentScreen == "" ||
       currentScreen == "favorite" ||
       currentScreen == "search" ? (

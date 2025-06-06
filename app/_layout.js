@@ -3,29 +3,45 @@ import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { HoldMenuProvider } from "react-native-hold-menu";
 import { PaperProvider } from "react-native-paper";
-import { ReportsProvider } from "../contexts/ReportsContext";
+import { ReportsProvider } from "@/contexts/ReportsContext";
 import { RecordsProvider } from "@/contexts/RecordsContext";
 import { SelectProvider } from "@/contexts/SelectContext";
 import { SearchRecordsProvider } from "@/contexts/SearchRecordsContext";
+import { SplashScreenController } from "@/components/Splash";
+import { AuthProvider } from "@/contexts/AuthContext";
+import * as NavigationBar from "expo-navigation-bar";
+import { StatusBar } from "expo-status-bar";
 
 export default function Root() {
   // Set up the auth context and render our layout inside of it.
-
+  NavigationBar.setBackgroundColorAsync("#025EA1");
   return (
-    <SearchRecordsProvider>
-      <ReportsProvider>
-        <RecordsProvider>
-          <SelectProvider>
-            <GluestackUIProvider mode="light">
-              <HoldMenuProvider theme="light" paddingBottom={48}>
-                <PaperProvider>
-                  <Slot />
-                </PaperProvider>
-              </HoldMenuProvider>
-            </GluestackUIProvider>
-          </SelectProvider>
-        </RecordsProvider>
-      </ReportsProvider>
-    </SearchRecordsProvider>
+    <AuthProvider>
+      <SearchRecordsProvider>
+        <ReportsProvider>
+          <RecordsProvider>
+            <SelectProvider>
+              <GluestackUIProvider mode="light">
+                <HoldMenuProvider theme="light" paddingBottom={48}>
+                  <PaperProvider>
+                    <StatusBar
+                      style="light"
+                      backgroundColor="#025EA1"
+                      translucent={false}
+                    />
+                    <SplashScreenController />
+                    <RootNavigator />
+                  </PaperProvider>
+                </HoldMenuProvider>
+              </GluestackUIProvider>
+            </SelectProvider>
+          </RecordsProvider>
+        </ReportsProvider>
+      </SearchRecordsProvider>
+    </AuthProvider>
   );
+}
+
+function RootNavigator() {
+  return <Slot />;
 }

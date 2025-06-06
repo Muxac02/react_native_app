@@ -18,8 +18,10 @@ import { useSelect } from "@/contexts/SelectContext";
 import { API_URL } from "@/utils/apiurl";
 import { useReports } from "@/contexts/ReportsContext";
 import { router } from "expo-router";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function AddReport() {
+  const author = useAuth().user.number;
   const { addReport } = useReports();
   const { ships } = useSelect();
   const [data, setData] = useState([]);
@@ -245,7 +247,7 @@ export default function AddReport() {
         <TouchableHighlight
           onPress={() => {
             addReport({
-              author: 1,
+              author: author,
               created_at: new Date().toLocaleString(),
               content: data,
             });

@@ -10,10 +10,12 @@ import {
 } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useReports } from "@/contexts/ReportsContext";
-import ReportCardBlock from "../../../../components/ReportCardBlock";
+import ReportCardBlock from "@/components/ReportCardBlock";
 import generateExcelFile from "@/utils/ExcelGeneration";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Report() {
+  const user = useAuth().user.number;
   const { reports, loading, error, authors } = useReports();
   const { id } = useLocalSearchParams();
   const data = reports.find((report) => report.number == id);
@@ -79,10 +81,21 @@ export default function Report() {
             console.log("2 pressed");
             router.push(`/report/${id}/update`);
           }}
-          style={styles.button}
+          style={[
+            styles.button,
+            { backgroundColor: user != data.author ? "#999" : "#025EA1" },
+          ]}
           underlayColor="#6CACE4"
+          disabled={user != data.author}
         >
-          <Text style={styles.buttonText}>Изменить</Text>
+          <Text
+            style={[
+              styles.buttonText,
+              { color: user != data.author ? "#444" : "#fff" },
+            ]}
+          >
+            Изменить
+          </Text>
         </TouchableHighlight>
       </View>
       <ScrollView>
@@ -134,6 +147,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     textAlign: "center",
+    fontWeight: "500",
   },
   block: {
     backgroundColor: "#fff",

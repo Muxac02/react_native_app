@@ -6,7 +6,7 @@ import {
   RefreshControl,
   Text,
 } from "react-native";
-import RecordCard from "../../components/RecordCard";
+import RecordCard from "@/components/RecordCard";
 import { useRecords } from "@/contexts/RecordsContext";
 
 export default function App() {
