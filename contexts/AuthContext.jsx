@@ -179,6 +179,7 @@ export const AuthProvider = ({ children }) => {
         register,
         hasRole,
         error,
+        loadingInit: loading,
       }}
     >
       {children}

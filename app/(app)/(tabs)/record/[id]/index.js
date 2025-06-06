@@ -13,8 +13,12 @@ import { useRecords } from "@/contexts/RecordsContext";
 import { useSelect } from "@/contexts/SelectContext";
 import { useEffect, useState } from "react";
 import { router } from "expo-router";
+import { useFavoriteRecords } from "@/contexts/FavoriteRecordsContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Record() {
+  const { user } = useAuth();
+  const { addFavorite, deleteFavorite } = useFavoriteRecords();
   const { id } = useLocalSearchParams();
   const { records, loading, error, changeStatus } = useRecords();
   const { ships, ports } = useSelect();

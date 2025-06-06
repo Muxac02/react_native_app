@@ -7,6 +7,7 @@ export const RecordsProvider = ({ children }) => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [favorite, setFavorite] = useState([]);
 
   const fetchRecords = async () => {
     try {

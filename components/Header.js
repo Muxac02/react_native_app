@@ -9,6 +9,7 @@ import { useRouter } from "expo-router";
 import RecordSearchDrawer from "./RecordSearchDrawer";
 import { usePathname } from "expo-router";
 import { Icon, ArrowLeftIcon, MenuIcon, AddIcon } from "@/components/ui/icon";
+import AddRecordsScreenHeaderButton from "./AddRecordsScreenHeaderButton";
 
 export default function Header(props) {
   const router = useRouter();
@@ -39,6 +40,8 @@ export default function Header(props) {
         >
           <Icon as={AddIcon} style={styles.icon} />
         </TouchableHighlight>
+      ) : currentScreen == "add" ? (
+        <AddRecordsScreenHeaderButton />
       ) : (
         <View style={{ width: 48 }}></View>
       )}

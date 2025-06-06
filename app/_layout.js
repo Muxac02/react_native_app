@@ -8,6 +8,7 @@ import { RecordsProvider } from "@/contexts/RecordsContext";
 import { SelectProvider } from "@/contexts/SelectContext";
 import { SearchRecordsProvider } from "@/contexts/SearchRecordsContext";
 import { SplashScreenController } from "@/components/Splash";
+import { FavoriteRecordsProvider } from "@/contexts/FavoriteRecordsContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import * as NavigationBar from "expo-navigation-bar";
 import { StatusBar } from "expo-status-bar";
@@ -19,23 +20,25 @@ export default function Root() {
     <AuthProvider>
       <SearchRecordsProvider>
         <ReportsProvider>
-          <RecordsProvider>
-            <SelectProvider>
-              <GluestackUIProvider mode="light">
-                <HoldMenuProvider theme="light" paddingBottom={48}>
-                  <PaperProvider>
-                    <StatusBar
-                      style="light"
-                      backgroundColor="#025EA1"
-                      translucent={false}
-                    />
-                    <SplashScreenController />
-                    <RootNavigator />
-                  </PaperProvider>
-                </HoldMenuProvider>
-              </GluestackUIProvider>
-            </SelectProvider>
-          </RecordsProvider>
+          <FavoriteRecordsProvider>
+            <RecordsProvider>
+              <SelectProvider>
+                <GluestackUIProvider mode="light">
+                  <HoldMenuProvider theme="light" paddingBottom={48}>
+                    <PaperProvider>
+                      <StatusBar
+                        style="light"
+                        backgroundColor="#025EA1"
+                        translucent={false}
+                      />
+                      <SplashScreenController />
+                      <RootNavigator />
+                    </PaperProvider>
+                  </HoldMenuProvider>
+                </GluestackUIProvider>
+              </SelectProvider>
+            </RecordsProvider>
+          </FavoriteRecordsProvider>
         </ReportsProvider>
       </SearchRecordsProvider>
     </AuthProvider>

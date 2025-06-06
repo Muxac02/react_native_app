@@ -12,7 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 
 export default function SignIn() {
-  const { login, error, user } = useAuth();
+  const { login, error, user, loadingInit } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -62,16 +62,24 @@ export default function SignIn() {
       {error ? (
         <Text style={{ color: "rgb(197, 0, 0)" }}>Ошибка : {error.detail}</Text>
       ) : null}
-      {loading ? <ActivityIndicator /> : null}
+      {loading || loadingInit ? <ActivityIndicator /> : null}
       <TouchableHighlight
         underlayColor="#6CACE4"
         style={[
           styles.button,
-          { backgroundColor: loading ? "#666" : "rgb(2, 94, 161)" },
+          {
+            backgroundColor:
+              loading || loadingInit ? "#666" : "rgb(2, 94, 161)",
+          },
         ]}
         onPress={handleLogin}
       >
-        <Text style={{ fontWeight: "bold", color: loading ? "#000" : "#fff" }}>
+        <Text
+          style={{
+            fontWeight: "bold",
+            color: loading || loadingInit ? "#000" : "#fff",
+          }}
+        >
           Войти
         </Text>
       </TouchableHighlight>

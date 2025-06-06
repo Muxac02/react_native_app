@@ -5,14 +5,22 @@ import {
   StyleSheet,
   TouchableHighlight,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import { useCountdown } from "../hooks/useCountDown";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons/";
 import { useRouter } from "expo-router";
 import { HoldItem } from "react-native-hold-menu";
 import { useSelect } from "@/contexts/SelectContext";
+import { useFavoriteRecords } from "@/contexts/FavoriteRecordsContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { MaterialIcons } from "@expo/vector-icons";
+import { ActivityIndicator } from "react-native-paper";
 
 export default function RecordCard(props) {
+  const { user } = useAuth();
+  const { recordsFavorite, addFavorite, deleteFavorite, loadingFavorite } =
+    useFavoriteRecords();
   const { ships, ports } = useSelect();
   const router = useRouter();
   const data = props.data;
@@ -292,7 +300,41 @@ export default function RecordCard(props) {
         disabled={props.loading}
       >
         <View>
-          <View style={[styles.head, { paddingBottom: archived ? 16 : 4 }]}>
+          <View
+            style={[
+              styles.head,
+              { paddingBottom: archived ? 16 : 4, paddingRight: 8 },
+            ]}
+          >
+            <TouchableOpacity
+              style={{ position: "absolute", right: -6, top: -6 }}
+              onPress={() => {
+                if (recordsFavorite.includes(data.number)) {
+                  deleteFavorite(user.number, data.number);
+                } else {
+                  addFavorite(user.number, data.number);
+                }
+              }}
+              disabled={loadingFavorite}
+            >
+              {loadingFavorite ? (
+                <ActivityIndicator />
+              ) : (
+                <MaterialIcons
+                  name={
+                    recordsFavorite.includes(data.number)
+                      ? "star"
+                      : "star-border"
+                  }
+                  size={24}
+                  color={
+                    recordsFavorite.includes(data.number)
+                      ? "rgb(245, 229, 84)"
+                      : "black"
+                  }
+                />
+              )}
+            </TouchableOpacity>
             <View style={styles.headShip}>
               <FontAwesome6 name="ship" color={textColor} size={28} />
               <Text style={styles.headText}>
