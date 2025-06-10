@@ -14,7 +14,6 @@ import * as NavigationBar from "expo-navigation-bar";
 import { StatusBar } from "expo-status-bar";
 
 export default function Root() {
-  // Set up the auth context and render our layout inside of it.
   NavigationBar.setBackgroundColorAsync("#025EA1");
   return (
     <AuthProvider>

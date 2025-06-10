@@ -1,19 +1,6 @@
-import { Text, View, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function FooterButton(props) {
-  // const Icon = () => {
-  //     switch (props.title) {
-  //         case "График":
-  //             return props.selected == props.id ? <AddActive width={24} height={24}/> : <AddInactive width={24} height={24}/>
-  //         case "Избранное":
-  //             return props.selected == props.id ? <FavoriteActive width={24} height={24}/> : <FavoriteInactive width={24} height={24}/>
-  //         case "Добавить":
-  //             return props.selected == props.id ? <ReportsActive width={24} height={24}/> : <ReportsInactive width={24} height={24}/>
-  //         case "Отчеты":
-  //             return props.selected == props.id ? <ScheduleActive width={24} height={24}/> : <ScheduleInactive width={24} height={24}/>
-  //     }
-  // }
-  console.log(props);
   return (
     <TouchableOpacity style={styles.container}>
       <View style={styles.activeBlock} />

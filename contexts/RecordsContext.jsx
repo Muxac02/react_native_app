@@ -1,18 +1,15 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { API_URL } from "@/utils/apiurl";
-
 const RecordsContext = createContext();
 
 export const RecordsProvider = ({ children }) => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [favorite, setFavorite] = useState([]);
-
   const fetchRecords = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/records`); // твой метод API
+      const response = await fetch(`${API_URL}/records`);
       if (!response.ok) {
         throw new Error("Failed to fetch records:", response.status);
       }
@@ -25,12 +22,6 @@ export const RecordsProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
-  // Загружаем данные при монтировании
-  useEffect(() => {
-    fetchRecords();
-  }, []);
-
   const updateRecord = async (id, changes) => {
     try {
       setLoading(true);
@@ -49,7 +40,6 @@ export const RecordsProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
   const changeStatus = async (id) => {
     try {
       setLoading(true);
@@ -71,7 +61,6 @@ export const RecordsProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
   const addRecord = async (body) => {
     try {
       setLoading(true);
@@ -98,7 +87,6 @@ export const RecordsProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
   const deleteRecord = async (id) => {
     try {
       setLoading(true);
@@ -124,14 +112,16 @@ export const RecordsProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
+  // Загружаем данные при монтировании
+  useEffect(() => {
+    fetchRecords();
+  }, []);
   return (
     <RecordsContext.Provider
       value={{
         records,
         loading,
         error,
-        //updateRecord,
         refreshRecords: fetchRecords,
         changeStatus: changeStatus,
         addRecord,
@@ -143,7 +133,6 @@ export const RecordsProvider = ({ children }) => {
     </RecordsContext.Provider>
   );
 };
-
 function sortRecords(records) {
   return records.sort((a, b) => {
     // Определяем приоритет группы (1, 2 или 3)
@@ -174,7 +163,6 @@ function sortRecords(records) {
     return dateA - dateB; // По возрастанию (от старых к новым)
   });
 }
-
 export const useRecords = () => {
   const context = useContext(RecordsContext);
   if (!context) {

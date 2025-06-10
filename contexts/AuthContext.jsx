@@ -6,7 +6,6 @@ import { API_URL } from "@/utils/apiurl";
 
 // Создаём контекст
 const AuthContext = createContext();
-
 // Конфиг API
 const TOKEN_KEY = "auth_token";
 
@@ -67,10 +66,8 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     };
-
     loadToken();
   }, []);
-
   // Функция входа
   const login = async (username, password) => {
     try {
@@ -119,7 +116,6 @@ export const AuthProvider = ({ children }) => {
       };
     }
   };
-
   // Функция выхода
   const logout = async () => {
     try {
@@ -142,7 +138,6 @@ export const AuthProvider = ({ children }) => {
       console.error("Logout error:", error);
     }
   };
-
   // Функция регистрации
   const register = async (userData) => {
     try {
@@ -163,12 +158,10 @@ export const AuthProvider = ({ children }) => {
       };
     }
   };
-
   // Проверка ролей
   const hasRole = (role) => {
     return authState.user?.role === role;
   };
-
   return (
     <AuthContext.Provider
       value={{
@@ -176,8 +169,6 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         logout,
-        register,
-        hasRole,
         error,
         loadingInit: loading,
       }}
